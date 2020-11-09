@@ -13,5 +13,6 @@ defmodule SimpleMongoAppWeb.Router do
     pipe_through :browser
     post "/", PageController, :index
     get "/", PageController, :index
+    get "/edit/:id", PageController, :edit
   end
 end

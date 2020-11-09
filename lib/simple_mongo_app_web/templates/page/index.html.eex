@@ -1,5 +1,4 @@
 <div class="jumbotron">
-  <h5>Enter classification and name, and a new column if required, and hit 'Save'</h5>
 
   <table class="table">
     <tbody>
@@ -16,6 +15,7 @@
               <span><button class="btn btn-default btn-xs" id="save_button_<%= id %>" name="save_button_<%= id %>" type="submit">Save</button></span>
               <span><button class="btn btn-default btn-xs" id="dele_button_<%= id %>" name="dele_button_<%= id %>" type="submit">Delete</button></span>
             </form>
+            <span><button class="btn btn-default btn-xs" id="edit_button_<%= id %>" name="edit_button_<%= id %>" onclick="window.location.href='/edit/<%= id %>';">Edit</button></span>
           </td>
 
         </tr>

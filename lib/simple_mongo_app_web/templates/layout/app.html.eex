@@ -7,8 +7,9 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Articles Database</title>
+    <title>Articles Editor</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <script src="https://cdn.tiny.cloud/1/gnleongw3g0nu6m2s0qziqdp7lemi3k8ntwf23ckfr033nq5/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
   </head>
 
   <body>
