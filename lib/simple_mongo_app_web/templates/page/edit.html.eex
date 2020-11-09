@@ -1,9 +1,10 @@
 <% article = show_article() %>
 <% id = elem( article, 0 ) %>
 <form id="form_<%= id %>" method="post" name="form_<%= id %>">
+  
   <% csrf_token = Phoenix.Controller.get_csrf_token() %>
   <input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= csrf_token %>">
-  <textarea>
+  <textarea id="textarea_<%= id %>" name="textarea_<%= id %>">
     <%= elem( article, 1 ) %>
   </textarea>
 
@@ -17,6 +18,6 @@
       tinycomments_author: '',
     });
   </script>
-  <span><button class="btn btn-default btn-xs" id="save_button_<%= id %>" name="save_button_<%= id %>" type="submit">Save</button></span>
+  <span><button class="btn btn-default btn-s" id="text_button_<%= id %>" name="text_button_<%= id %>" type="submit" action="/">Save</button></span>
 
 </form>

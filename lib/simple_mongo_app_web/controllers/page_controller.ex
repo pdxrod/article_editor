@@ -57,7 +57,7 @@ defmodule SimpleMongoAppWeb.PageController do
 
   defp remove_unwanted_keys( args ) do
  # "_csrf_token" => "UCwUFn5PbBw9FSNpMR0aRyk8MDkdOgYa4gECM56NsyaZCUhqfIwKQPVE",
- # "_id" => "5fa793f09dad02e8eae18e33", "classification" => "man",
+ # "_id" => "5fa793f09dad02e8eae18e33", "classification" => "man", "text" => "<div>TinyMCE</div>",
  # "name" => "John", "new_column" => "gender", "save_button_5fa793f09dad02e8eae18e33" => ""
    map = Map.delete( args, "_csrf_token" )
    map = Map.delete( map, "new_column" )
