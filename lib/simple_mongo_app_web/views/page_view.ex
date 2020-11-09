@@ -46,7 +46,9 @@ defmodule SimpleMongoAppWeb.PageView do
   end
 
   defp stringify_map( map ) do
-    str = stringify_keys( Map.keys( map ), map )
+    keys = Map.keys( map )
+    keys = List.delete( keys, "text" )
+    str = stringify_keys( keys, map )
     id = String.slice str, 0..23
     str = String.slice str, 24..-1
     if str =~ @new_column_reg do
