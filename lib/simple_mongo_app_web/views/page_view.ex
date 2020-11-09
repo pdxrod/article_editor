@@ -86,11 +86,11 @@ defmodule SimpleMongoAppWeb.PageView do
     end
   end
 
-  def show_article(  ) do
-    cursor = Mongo.find(:article, "my_app_db", %{"_id" => "21551e404523e2ea57799d82"})
+  def show_article( id ) do
+    cursor = Mongo.find(:article, "my_app_db", %{"_id" => id})
     list = cursor |> Enum.to_list()
     article = List.first( list )[ "text" ]
-    {"21551e404523e2ea57799d82", "hello mce"}
+    article
   end
 
 end

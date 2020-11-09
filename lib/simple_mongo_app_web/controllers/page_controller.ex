@@ -112,7 +112,6 @@ defmodule SimpleMongoAppWeb.PageController do
   defp find_textarea_key( keys ) do
     case keys do
       [] -> @decaf0ff
-      %{"id" => _key} -> @decaf0ff
       [hd | tl] ->
         if hd =~ @textarea_reg do
           hd
@@ -122,10 +121,10 @@ defmodule SimpleMongoAppWeb.PageController do
     end
   end
 
-# %{"_csrf_token" => "LwA_GUJNH2R9K29nEQ4AYX4kNyUlBh4FKKnLq7E63G-TcFrW1QpWilNZ", "id" => "f74f896e704204874c9511dd",
+# %{"_csrf_token" => "LwA_GUJNH2R9K29nEQ4AYX4kNyUlBh4FKKnLq7E63G-TcFrW1QpWilNZ", "id" => "21551e404523e2ea57799d82",
 # "text_button_21551e404523e2ea57799d82" => "", "textarea_21551e404523e2ea57799d82" => "<p>hello mce</p>"}
   defp update( id, params ) do
-    textarea_key = find_textarea_key params
+    textarea_key = find_textarea_key Map.keys( params )
     text = params[ textarea_key ]
     old_article = Mongo.find_one(:article, "my_app_db", %{_id: id})
     new_article = remove_unneeded_keys params
@@ -137,22 +136,24 @@ defmodule SimpleMongoAppWeb.PageController do
   defp analyse_params( params ) do
     id = params[ "id" ]
     if id == nil do
-      IO.puts "Not found 1 - this just means displaying the edit, not hitting the button"
+      IO.puts "Not found - this just means displaying the edit page, not hitting the button"
     else
-      textarea_key = find_textarea_key params
+      textarea_key = find_textarea_key Map.keys( params )
       if textarea_key == @decaf0ff do
-        IO.puts "Not found 2 - this just means displaying the edit, not hitting the button"
+        IO.puts "Not found - this just means displaying the editor, not hitting the button"
       else
         new_article = update id, params
         t = new_article[ "text" ]
-        IO.puts "Found and replaced article #{id} with #{t}"
+        IO.puts "Found and replaced article #{id} with '#{t}'"
       end
     end
+    id
   end
 
     def edit( conn, params ) do
       key = find_button_key( Map.keys( params ))
-      analyse_params params
+      id = analyse_params params
+      conn = assign(conn, :id, id)
       conn = render conn, "edit.html"
       IO.puts "edit params #{params[ key ]}"
       conn

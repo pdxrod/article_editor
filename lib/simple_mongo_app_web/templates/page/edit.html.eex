@@ -1,11 +1,11 @@
-<% article = show_article() %>
-<% id = elem( article, 0 ) %>
+<% id = assigns[ :id ]  %>
+<% article = show_article( id ) %>
 <form id="form_<%= id %>" method="post" name="form_<%= id %>">
 
   <% csrf_token = Phoenix.Controller.get_csrf_token() %>
   <input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= csrf_token %>">
   <textarea id="textarea_<%= id %>" name="textarea_<%= id %>">
-    <%= elem( article, 1 ) %>
+    <%= article %>
   </textarea>
 
   <script>
