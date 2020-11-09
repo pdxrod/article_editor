@@ -4,6 +4,9 @@ defmodule SimpleMongoAppWeb.PageController do
 
   @save_button_reg ~r/save_button_.+/
   @dele_button_reg ~r/dele_button_.+/
+  @text_button_reg ~r/text_button_.+/
+  @todo_button_reg ~r/.{4}_button_.+/
+  @textarea_reg ~r/textarea_.+/
   @decaf0ff "decaf0ff"
 
   defp delete( id ) do
@@ -42,7 +45,7 @@ defmodule SimpleMongoAppWeb.PageController do
     case keys do
       [] -> @decaf00f
       [hd | tl] ->
-        if (hd =~ @save_button_reg) || (hd =~ @dele_button_reg) do
+        if hd =~ @todo_button_reg do
           hd
         else
           find_button_key tl
@@ -92,13 +95,67 @@ defmodule SimpleMongoAppWeb.PageController do
     end
   end
 
-  def index(conn, params) do
-    analyze_params params
-    render conn, "index.html"
+    def index(conn, params) do
+      analyze_params params
+      render conn, "index.html"
+    end
+
+  defp remove_unneeded_keys( args ) do
+    map = Map.delete( args, "id" )
+    map = Map.delete( map, "_csrf_token" )
+    key = find_button_key( Map.keys( map ))
+    map = Map.delete( map, key )
+    key = find_textarea_key( Map.keys( map ))
+    Map.delete( map, key )
   end
 
-  def edit( conn, _params ) do
-    render conn, "edit.html"
+  defp find_textarea_key( keys ) do
+    case keys do
+      [] -> @decaf0ff
+      %{"id" => _key} -> @decaf0ff
+      [hd | tl] ->
+        if hd =~ @textarea_reg do
+          hd
+        else
+          find_textarea_key tl
+        end
+    end
   end
+
+# %{"_csrf_token" => "LwA_GUJNH2R9K29nEQ4AYX4kNyUlBh4FKKnLq7E63G-TcFrW1QpWilNZ", "id" => "f74f896e704204874c9511dd",
+# "text_button_21551e404523e2ea57799d82" => "", "textarea_21551e404523e2ea57799d82" => "<p>hello mce</p>"}
+  defp update( id, params ) do
+    textarea_key = find_textarea_key params
+    text = params[ textarea_key ]
+    old_article = Mongo.find_one(:article, "my_app_db", %{_id: id})
+    new_article = remove_unneeded_keys params
+    new_article = Map.put( new_article, "text", text )
+    {:ok, new_article} = Mongo.find_one_and_replace(:article, "my_app_db", old_article, new_article, [return_document: :after, upsert: :true])
+    new_article
+  end
+
+  defp analyse_params( params ) do
+    id = params[ "id" ]
+    if id == nil do
+      IO.puts "Not found 1 - this just means displaying the edit, not hitting the button"
+    else
+      textarea_key = find_textarea_key params
+      if textarea_key == @decaf0ff do
+        IO.puts "Not found 2 - this just means displaying the edit, not hitting the button"
+      else
+        new_article = update id, params
+        t = new_article[ "text" ]
+        IO.puts "Found and replaced article #{id} with #{t}"
+      end
+    end
+  end
+
+    def edit( conn, params ) do
+      key = find_button_key( Map.keys( params ))
+      analyse_params params
+      conn = render conn, "edit.html"
+      IO.puts "edit params #{params[ key ]}"
+      conn
+    end
 
 end

@@ -20,15 +20,19 @@ defmodule SimpleMongoAppWeb.PageView do
   end
 
   defp stringify_key_val( key, val ) do
-    if typeof( val ) == "binary" do
-      if key == "_id" do
-        val                # It's a hex string
-      else
-        "#{key} <input id='#{key}' name='#{key}' type='text' value='#{val}'><br/>\n"
-      end
+    if val == nil do
+      ""
     else
-      str = Base.encode16(val.value, case: :lower)
-      "#{ str }" # It's a %BSON.ObjectId{value: "HEXNUM"}
+      if typeof( val ) == "binary" do
+        if key == "_id" do
+          val                # It's a hex string
+        else
+          "#{key} <input id='#{key}' name='#{key}' type='text' value='#{val}'><br/>\n"
+        end
+      else
+        str = Base.encode16(val.value, case: :lower)
+        "#{ str }" # It's a %BSON.ObjectId{value: "HEXNUM"}
+      end
     end
   end
 
