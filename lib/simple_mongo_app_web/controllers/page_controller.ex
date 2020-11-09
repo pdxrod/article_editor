@@ -97,7 +97,7 @@ defmodule SimpleMongoAppWeb.PageController do
     render conn, "index.html"
   end
 
-  def edit( conn, params ) do
+  def edit( conn, _params ) do
     render conn, "edit.html"
   end
 
