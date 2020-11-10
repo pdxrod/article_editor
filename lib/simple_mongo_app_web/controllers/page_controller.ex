@@ -129,6 +129,7 @@ defmodule SimpleMongoAppWeb.PageController do
     old_article = Mongo.find_one(:article, "my_app_db", %{_id: id})
     new_article = remove_unneeded_keys params
     new_article = Map.put( new_article, "text", text )
+    new_article = Map.merge( new_article, old_article )
     {:ok, new_article} = Mongo.find_one_and_replace(:article, "my_app_db", old_article, new_article, [return_document: :after, upsert: :true])
     new_article
   end

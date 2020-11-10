@@ -75,7 +75,7 @@ defmodule SimpleMongoAppWeb.PageView do
   defp articles do
     cursor = Mongo.find(:article, "my_app_db", %{})
     list = cursor |> Enum.to_list() |> stringify_list
-    list ++ empty_row
+    list ++ empty_row()
   end
 
   def show_articles do
@@ -84,6 +84,7 @@ defmodule SimpleMongoAppWeb.PageView do
       articles()
     rescue
       re in RuntimeError -> re
+        # case re do
       ["e", "Error: #{ re.message }"] # {:error, {:already_started, #PID<0.451.0>}}
     end
   end

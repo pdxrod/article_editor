@@ -19,5 +19,5 @@
     });
   </script>
   <span><button class="btn btn-default btn-s" id="text_button_<%= id %>" name="text_button_<%= id %>" type="submit" action="/">Save</button></span>
-
+  <span><a href="/">Back</a></span>
 </form>
