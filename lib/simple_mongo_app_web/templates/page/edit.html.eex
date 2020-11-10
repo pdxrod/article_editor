@@ -8,16 +8,18 @@
     <%= article %>
   </textarea>
 
-  <script>
-    tinymce.init({
-      selector: 'textarea',
-      plugins: 'link a11ychecker advcode casechange formatpainter linkchecker autolink lists checklist media mediaembed pageembed permanentpen powerpaste table advtable tinycomments tinymcespellchecker',
-      toolbar: 'link a11ycheck addcomment showcomments casechange checklist code formatpainter pageembed permanentpen table',
-      toolbar_mode: 'floating',
-      tinycomments_mode: 'embedded',
-      tinycomments_author: '',
-    });
+  <script type="text/javascript">
+        tinyMCE.init( {
+            mode : "textareas",
+            theme : "advanced",
+            relative_url : false,
+            theme_advanced_buttons1: "bold, italic, removeformat, separator, charmap, separator, justifyleft, justifycenter, justifyright, justifyfull, formatselect",
+            theme_advanced_buttons2: "undo, redo, separator, link, unlink, separator, bullist, separator, outdent, indent, separator, hr, separator, cleanup, code",
+            theme_advanced_buttons3: "",
+            onchange_callback : function() { tinyMCE.triggerSave(); changed = true; }
+                      } );
   </script>
+
   <span><button class="btn btn-default btn-s" id="text_button_<%= id %>" name="text_button_<%= id %>" type="submit" action="/">Save</button></span>
   <span><a href="/">Back</a></span>
 </form>
