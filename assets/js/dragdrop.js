@@ -373,7 +373,7 @@ var Draggable = Class.create({
 
       var p;
       if (this.options.scroll == window) {
-        with(this._getWindowScroll(this.options.scroll)) { p = [ left, top, left+width, top+height ]; }
+      //  with(this._getWindowScroll(this.options.scroll)) { p = [ left, top, left+width, top+height ]; }
       } else {
         p = Position.page(this.options.scroll);
         p[0] += this.options.scroll.scrollLeft + Position.deltaX;
@@ -516,12 +516,12 @@ var Draggable = Class.create({
     var delta = current - this.lastScrolled;
     this.lastScrolled = current;
     if(this.options.scroll == window) {
-      with (this._getWindowScroll(this.options.scroll)) {
-        if (this.scrollSpeed[0] || this.scrollSpeed[1]) {
-          var d = delta / 1000;
-          this.options.scroll.scrollTo( left + d*this.scrollSpeed[0], top + d*this.scrollSpeed[1] );
-        }
-      }
+      // with (this._getWindowScroll(this.options.scroll)) {
+      //   if (this.scrollSpeed[0] || this.scrollSpeed[1]) {
+      //     var d = delta / 1000;
+      //     this.options.scroll.scrollTo( left + d*this.scrollSpeed[0], top + d*this.scrollSpeed[1] );
+      //   }
+      // }
     } else {
       this.options.scroll.scrollLeft += this.scrollSpeed[0] * delta / 1000;
       this.options.scroll.scrollTop  += this.scrollSpeed[1] * delta / 1000;
@@ -546,25 +546,25 @@ var Draggable = Class.create({
 
   _getWindowScroll: function(w) {
     var T, L, W, H;
-    with (w.document) {
-      if (w.document.documentElement && documentElement.scrollTop) {
-        T = documentElement.scrollTop;
-        L = documentElement.scrollLeft;
-      } else if (w.document.body) {
-        T = body.scrollTop;
-        L = body.scrollLeft;
-      }
-      if (w.innerWidth) {
-        W = w.innerWidth;
-        H = w.innerHeight;
-      } else if (w.document.documentElement && documentElement.clientWidth) {
-        W = documentElement.clientWidth;
-        H = documentElement.clientHeight;
-      } else {
-        W = body.offsetWidth;
-        H = body.offsetHeight;
-      }
-    }
+    // with (w.document) {
+    //   if (w.document.documentElement && documentElement.scrollTop) {
+    //     T = documentElement.scrollTop;
+    //     L = documentElement.scrollLeft;
+    //   } else if (w.document.body) {
+    //     T = body.scrollTop;
+    //     L = body.scrollLeft;
+    //   }
+    //   if (w.innerWidth) {
+    //     W = w.innerWidth;
+    //     H = w.innerHeight;
+    //   } else if (w.document.documentElement && documentElement.clientWidth) {
+    //     W = documentElement.clientWidth;
+    //     H = documentElement.clientHeight;
+    //   } else {
+    //     W = body.offsetWidth;
+    //     H = body.offsetHeight;
+    //   }
+    // }
     return { top: T, left: L, width: W, height: H };
   }
 });

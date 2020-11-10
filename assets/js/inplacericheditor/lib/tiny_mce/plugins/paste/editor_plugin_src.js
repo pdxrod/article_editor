@@ -2,7 +2,7 @@
  * $Id: editor_plugin_src.js 862 2008-06-02 20:09:06Z spocke $
  *
  * @author Moxiecode
- * @copyright Copyright © 2004-2008, Moxiecode Systems AB, All rights reserved.
+ * @copyright Copyright ï¿½ 2004-2008, Moxiecode Systems AB, All rights reserved.
  */
 
 (function() {
@@ -12,7 +12,7 @@
 		init : function(ed, url) {
 			var t = this;
 
-			t.editor = ed; 
+			t.editor = ed;
 
 			// Register commands
 			ed.addCommand('mcePasteText', function(ui, v) {
@@ -50,7 +50,7 @@
 			});
 
 			ed.addCommand('mceSelectAll', function() {
-				ed.execCommand('selectall'); 
+				ed.execCommand('selectall');
 			});
 
 			// Register buttons
@@ -107,8 +107,8 @@
 			content = this.editor.dom.encode(content);
 
 			if (content && content.length > 0) {
-				if (bLinebreaks) { 
-					// Special paragraph treatment 
+				if (bLinebreaks) {
+					// Special paragraph treatment
 					if (this.editor.getParam("paste_create_paragraphs", true)) {
 						var rl = this.editor.getParam("paste_replace_list", '\u2122,<sup>TM</sup>,\u2026,...,\u201c|\u201d,",\u2019,\',\u2013|\u2014|\u2015|\u2212,-').split(',');
 						for (var i=0; i<rl.length; i+=2)
@@ -118,50 +118,50 @@
 						content = content.replace(/\r\r/g, '</p><p>');
 						content = content.replace(/\n\n/g, '</p><p>');
 
-						// Has paragraphs 
-						if ((pos = content.indexOf('</p><p>')) != -1) { 
-							this.editor.execCommand("Delete"); 
+						// Has paragraphs
+						if ((pos = content.indexOf('</p><p>')) != -1) {
+							this.editor.execCommand("Delete");
 
-							var node = this.editor.selection.getNode(); 
+							var node = this.editor.selection.getNode();
 
-							// Get list of elements to break 
+							// Get list of elements to break
 							var breakElms = [];
 
-							do { 
-								if (node.nodeType == 1) { 
-									// Don't break tables and break at body 
-									if (node.nodeName == "TD" || node.nodeName == "BODY") 
-										break; 
-			
-									breakElms[breakElms.length] = node; 
-								} 
-							} while(node = node.parentNode); 
+							do {
+								if (node.nodeType == 1) {
+									// Don't break tables and break at body
+									if (node.nodeName == "TD" || node.nodeName == "BODY")
+										break;
 
-							var before = "", after = "</p>"; 
-							before += content.substring(0, pos); 
+									breakElms[breakElms.length] = node;
+								}
+							} while(node = node.parentNode);
 
-							for (var i=0; i<breakElms.length; i++) { 
-								before += "</" + breakElms[i].nodeName + ">"; 
-								after += "<" + breakElms[(breakElms.length-1)-i].nodeName + ">"; 
-							} 
+							var before = "", after = "</p>";
+							before += content.substring(0, pos);
 
-							before += "<p>"; 
-							content = before + content.substring(pos+7) + after; 
-						} 
-					} 
+							for (var i=0; i<breakElms.length; i++) {
+								before += "</" + breakElms[i].nodeName + ">";
+								after += "<" + breakElms[(breakElms.length-1)-i].nodeName + ">";
+							}
+
+							before += "<p>";
+							content = before + content.substring(pos+7) + after;
+						}
+					}
 
 					if (this.editor.getParam("paste_create_linebreaks", true)) {
 						content = content.replace(/\r\n/g, '<br />');
 						content = content.replace(/\r/g, '<br />');
 						content = content.replace(/\n/g, '<br />');
 					}
-				} 
+				}
 
-				this.editor.execCommand("mceInsertRawHTML", false, content); 
+				this.editor.execCommand("mceInsertRawHTML", false, content);
 			}
 		},
 
-		_insertWordContent : function(content) { 
+		_insertWordContent : function(content) {
 			var t = this, ed = t.editor;
 
 			if (content && content.length > 0) {
@@ -363,13 +363,13 @@
 				var div = document.createElement('DIV');
 				div.id = '_TinyMCE_clipboardHTML';
 
-				with (div.style) {
-					visibility = 'hidden';
-					overflow = 'hidden';
-					position = 'absolute';
-					width = 1;
-					height = 1;
-				}
+				
+					div.style.visibility = 'hidden';
+					div.style.overflow = 'hidden';
+					div.style.position = 'absolute';
+					div.style.width = 1;
+					div.style.height = 1;
+
 
 				document.body.appendChild(div);
 			}
