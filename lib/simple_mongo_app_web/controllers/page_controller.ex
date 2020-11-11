@@ -55,7 +55,11 @@ defmodule SimpleMongoAppWeb.PageController do
 
   defp find_new_column( args ) do
     new_column = args["new_column"]
-    String.trim new_column
+    if new_column == nil do
+      ""
+    else
+      String.trim new_column
+    end
   end
 
   defp remove_unwanted_keys( args ) do

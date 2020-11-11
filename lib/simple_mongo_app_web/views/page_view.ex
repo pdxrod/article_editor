@@ -11,11 +11,21 @@ defmodule SimpleMongoAppWeb.PageView do
     )
   end
 
+  @new_column_reg ~r/new column <input id='new_column' name='new_column' type='text' value/
   @new_column_field "new column <input id='new_column' name='new_column' type='text' value=''>\n<br/> "
   @dele_button_field "<span><button class='btn btn-default btn-xs' id='dele_button_ID' name='dele_button_ID' type='submit'>Delete</button></span>\n"
   @save_button_field "<span><button class='btn btn-default btn-xs' id='save_button_ID' name='save_button_ID' type='submit'>Save</button></span>\n"
-  @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick='window.location.href='/edit/ID';'>Edit</button></span>"
-  @new_column_reg ~r/new column <input id='new_column' name='new_column' type='text' value/
+  @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick=\"reg_check(); return false;\">Edit</button></span>"
+  @reg_javascript_fn """
+  <script>
+      function reg_check() {
+        alert("reg_check")
+        window.location = "/edit/ID";
+        return false;
+      }
+  // Thx https://stackoverflow.com/questions/27725127/redirect-using-window-location-doesnt-work
+  </script>
+  """
 
   @types ~w[function nil integer binary bitstring list map float atom tuple pid port reference]
   for type <- @types do
@@ -61,9 +71,10 @@ defmodule SimpleMongoAppWeb.PageView do
     end
     del = String.replace @dele_button_field, "ID", id
     save = String.replace @save_button_field, "ID", id
+    javascript = String.replace @reg_javascript_fn, "ID", id
     edit = String.replace @edit_button_field, "ID", id
-    str = str <> del <> save <> edit
-    [ { id, str }]
+    str = str <> del <> save <> javascript <> edit
+    [ { id, str } ]
   end
 
   defp stringify_list( list ) do

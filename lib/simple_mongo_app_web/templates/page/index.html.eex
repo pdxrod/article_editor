@@ -1,6 +1,7 @@
 <div class="jumbotron">
 
   <table class="table">
+
     <tbody>
 
       <%= for article <- show_articles() do %>
