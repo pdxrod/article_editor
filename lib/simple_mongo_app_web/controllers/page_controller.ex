@@ -125,11 +125,11 @@ defmodule SimpleMongoAppWeb.PageController do
 # "text_button_21551e404523e2ea57799d82" => "", "textarea_21551e404523e2ea57799d82" => "<p>hello mce</p>"}
   defp update( id, params ) do
     textarea_key = find_textarea_key Map.keys( params )
-    text = params[ textarea_key ]
+    text = params[ textarea_key ]                       # Get the new HTML text from the textarea on the edit page
     old_article = Mongo.find_one(:article, "my_app_db", %{_id: id})
     new_article = remove_unneeded_keys params
-    new_article = Map.put( new_article, "text", text )
-    new_article = Map.merge( new_article, old_article )
+    new_article = Map.merge( new_article, old_article ) # This gets the name, etc. from the previous version, but also the old HTML text
+    new_article = Map.put( new_article, "text", text )  # So put the new text in it in its place, and save it
     {:ok, new_article} = Mongo.find_one_and_replace(:article, "my_app_db", old_article, new_article, [return_document: :after, upsert: :true])
     new_article
   end
