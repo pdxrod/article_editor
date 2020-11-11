@@ -13,13 +13,12 @@ defmodule SimpleMongoAppWeb.PageView do
 
   @new_column_reg ~r/new column <input id='new_column' name='new_column' type='text' value/
   @new_column_field "new column <input id='new_column' name='new_column' type='text' value=''>\n<br/> "
-  @dele_button_field "<span><button class='btn btn-default btn-xs' id='dele_button_ID' name='dele_button_ID' type='submit'>Delete</button></span>\n"
-  @save_button_field "<span><button class='btn btn-default btn-xs' id='save_button_ID' name='save_button_ID' type='submit'>Save</button></span>\n"
-  @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick=\"reg_check(); return false;\">Edit</button></span>"
+  @dele_button_field "<span><button class='btn btn-default btn-xs' id='dele_button_ID' name='dele_button_ID' type='submit' style='background-color: #ff99cc; width: 80px;'>Delete</button></span>\n"
+  @save_button_field "<span><button class='btn btn-default btn-xs' id='save_button_ID' name='save_button_ID' type='submit' style='background-color: #00ffff; width: 80px;'>Save</button></span>\n"
+  @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick=\"reg_check(); return false;\" style='background-color: #66ffcc; width: 80px;'>Edit</button></span>"
   @reg_javascript_fn """
   <script>
       function reg_check() {
-        alert("reg_check")
         window.location = "/edit/ID";
         return false;
       }
@@ -73,7 +72,7 @@ defmodule SimpleMongoAppWeb.PageView do
     save = String.replace @save_button_field, "ID", id
     javascript = String.replace @reg_javascript_fn, "ID", id
     edit = String.replace @edit_button_field, "ID", id
-    str = str <> del <> save <> javascript <> edit
+    str = str <> save <> javascript <> edit <> "&nbsp;" <> del
     [ { id, str } ]
   end
 
@@ -89,7 +88,7 @@ defmodule SimpleMongoAppWeb.PageView do
     map = %{ name: "", classification: "" }
     str = stringify_keys( Map.keys( map ), map )
     save = String.replace @save_button_field, "ID", id
-    [{ id, str <> save }]
+    [ { id, str <> save } ]
   end
 
   defp articles do
