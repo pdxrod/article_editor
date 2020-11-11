@@ -12,10 +12,7 @@
             <form id="form_<%= id %>" method="post" name="form_<%= id %>">
               <%= elem( article, 1 ) |> raw %>
               <input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= csrf_token %>">
-              <span><button class="btn btn-default btn-xs" id="save_button_<%= id %>" name="save_button_<%= id %>" type="submit">Save</button></span>
-              <span><button class="btn btn-default btn-xs" id="dele_button_<%= id %>" name="dele_button_<%= id %>" type="submit">Delete</button></span>
             </form>
-            <span><button class="btn btn-default btn-xs" id="edit_button_<%= id %>" name="edit_button_<%= id %>" onclick="window.location.href='/edit/<%= id %>';">Edit</button></span>
           </td>
 
         </tr>

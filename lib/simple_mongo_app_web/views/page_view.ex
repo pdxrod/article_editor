@@ -11,12 +11,15 @@ defmodule SimpleMongoAppWeb.PageView do
     )
   end
 
-  @new_column_field "new column <input id='new_column' name='new_column' type='text' value=''> "
+  @new_column_field "new column <input id='new_column' name='new_column' type='text' value=''>\n<br/> "
+  @dele_button_field "<span><button class='btn btn-default btn-xs' id='dele_button_ID' name='dele_button_ID' type='submit'>Delete</button></span>\n"
+  @save_button_field "<span><button class='btn btn-default btn-xs' id='save_button_ID' name='save_button_ID' type='submit'>Save</button></span>\n"
+  @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick='window.location.href='/edit/ID';'>Edit</button></span>"
   @new_column_reg ~r/new column <input id='new_column' name='new_column' type='text' value/
 
   @types ~w[function nil integer binary bitstring list map float atom tuple pid port reference]
   for type <- @types do
-    def typeof(x) when unquote(:"is_#{type}")(x), do: unquote(type)
+    defp typeof(x) when unquote(:"is_#{type}")(x), do: unquote(type)
   end
 
   defp stringify_key_val( key, val ) do
@@ -51,11 +54,16 @@ defmodule SimpleMongoAppWeb.PageView do
     str = stringify_keys( keys, map )
     id = String.slice str, 0..23
     str = String.slice str, 24..-1
-    if str =~ @new_column_reg do
-      [{ id, str }] # id is the first 24 characters of the string returned by stringify_keys - str is the rest of it
+    str = if str =~ @new_column_reg do
+      str # id is the first 24 characters of the string returned by stringify_keys - str is the rest of it
     else
-      [{ id, str <> @new_column_field }]
+      str <> @new_column_field
     end
+    del = String.replace @dele_button_field, "ID", id
+    save = String.replace @save_button_field, "ID", id
+    edit = String.replace @edit_button_field, "ID", id
+    str = str <> del <> save <> edit
+    [ { id, str }]
   end
 
   defp stringify_list( list ) do
@@ -69,7 +77,8 @@ defmodule SimpleMongoAppWeb.PageView do
     id = String.slice( RandomBytes.base16, 0..23 )
     map = %{ name: "", classification: "" }
     str = stringify_keys( Map.keys( map ), map )
-    [{ id, str <> @new_column_field }]
+    save = String.replace @save_button_field, "ID", id
+    [{ id, str <> save }]
   end
 
   defp articles do
