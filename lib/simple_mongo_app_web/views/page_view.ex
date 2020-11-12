@@ -11,8 +11,8 @@ defmodule SimpleMongoAppWeb.PageView do
     )
   end
 
-  @new_column_reg ~r/new column <input id='new_column' name='new_column' type='text' value/
-  @new_column_field "new column <input id='new_column' name='new_column' type='text' value=''>\n<br/> "
+  @new_column_reg ~r/<label.+new column.+input.+new_column.+/
+  @new_column_field "<label style='width: 49%; float: left' for='new_column'>new column?</label> <input style='width: 49%; float: left;' id='new_column' name='new_column' type='text' value=''>\n<br/> "
   @dele_button_field "<span><button class='btn btn-default btn-xs' id='dele_button_ID' name='dele_button_ID' type='submit' style='background-color: #ff99cc; width: 80px;'>Delete</button></span>\n"
   @save_button_field "<span><button class='btn btn-default btn-xs' id='save_button_ID' name='save_button_ID' type='submit' style='background-color: #00ffff; width: 80px;'>Save</button></span>\n"
   @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick=\"reg_check(); return false;\" style='background-color: #66ffcc; width: 80px;'>Edit</button></span>"
@@ -88,7 +88,8 @@ defmodule SimpleMongoAppWeb.PageView do
     map = %{ name: "", classification: "" }
     str = stringify_keys( Map.keys( map ), map )
     save = String.replace @save_button_field, "ID", id
-    [ { id, str <> save } ]
+    label = "<div><b>New article</b></div>\n<br/>"
+    [ { id, label <> str <> save } ]
   end
 
   defp articles do
