@@ -39,7 +39,7 @@ defmodule SimpleMongoAppWeb.PageView do
         if key == "_id" do
           val                # It's a hex string
         else
-          "<span><label style='float: left;' for='#{key}'>#{key}</label> <input style='display: block; width: 100%' id='#{key}' name='#{key}' type='text' value='#{val}'></span><br/>\n"
+          "<span><label style='width: 49%; float: left' for='#{key}'>#{key}</label> <input style='width: 49%; float: left;' id='#{key}' name='#{key}' type='text' value='#{val}'></span><br/>\n"
         end
       else
         str = Base.encode16(val.value, case: :lower)
