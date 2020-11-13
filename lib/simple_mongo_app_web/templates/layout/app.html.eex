@@ -24,12 +24,26 @@
   </head>
 
   <body>
+
+
+    <script type="text/javascript">
+      function keyUpSearch() {
+        id = document.getElementById( "_something" );
+        searchBox = document.getElementById( "_search" );
+        val = searchBox.value;
+        id.innerHTML = val;
+      }
+    </script>
+
     <div class="container">
 
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 
       <main role="main">
+        <span class="jumbotron"><label for='_search'>Search</label>
+          <input onkeyup="keyUpSearch()" id='_search' name='_search' type='text' style="width: 515px" value=''></span>
+
         <%= render @view_module, @view_template, assigns %>
       </main>
 
