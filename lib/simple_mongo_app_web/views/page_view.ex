@@ -49,7 +49,7 @@ defmodule SimpleMongoAppWeb.PageView do
 
   defp stringify_map( map ) do
     keys = Map.keys( map )
-    keys = List.delete( keys, "text" )
+    keys = List.delete( keys, "page" )
     str = stringify_keys( keys, map )
     id = String.slice str, 0..23
     str = String.slice str, 24..-1
@@ -93,15 +93,14 @@ defmodule SimpleMongoAppWeb.PageView do
       articles()
     rescue
       re in RuntimeError -> re
-        # case re do
-      ["e", "Error: #{ re.message }"] # {:error, {:already_started, #PID<0.451.0>}}
+      [ { "decaf0ff", "Error: #{ re.message }" } ]
     end
   end
 
   def show_article( id ) do
     cursor = Mongo.find(:article, "my_app_db", %{"_id" => id})
     list = cursor |> Enum.to_list()
-    article = List.first( list )[ "text" ]
+    article = List.first( list )[ "page" ]
     article
   end
 

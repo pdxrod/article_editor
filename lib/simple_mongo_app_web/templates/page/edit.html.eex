@@ -4,6 +4,7 @@
 
   <% csrf_token = Phoenix.Controller.get_csrf_token() %>
   <input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= csrf_token %>">
+
   <textarea id="textarea_<%= id %>" name="textarea_<%= id %>" rows="30" cols="80">
     <%= article %>
   </textarea>

@@ -64,7 +64,7 @@ defmodule SimpleMongoAppWeb.PageController do
 
   defp remove_unwanted_keys( args ) do
  # "_csrf_token" => "UCwUFn5PbBw9FSNpMR0aRyk8MDkdOgYa4gECM56NsyaZCUhqfIwKQPVE",
- # "_id" => "5fa793f09dad02e8eae18e33", "classification" => "man", "text" => "<div>TinyMCE</div>",
+ # "_id" => "5fa793f09dad02e8eae18e33", "classification" => "man", "page" => "<div>TinyMCE</div>",
  # "name" => "John", "new_column" => "gender", "save_button_5fa793f09dad02e8eae18e33" => ""
    map = Map.delete( args, "_csrf_token" )
    map = Map.delete( map, "new_column" )
@@ -133,7 +133,7 @@ defmodule SimpleMongoAppWeb.PageController do
     old_article = Mongo.find_one(:article, "my_app_db", %{_id: id})
     new_article = remove_unneeded_keys params
     new_article = Map.merge( new_article, old_article ) # This gets the name, etc. from the previous version, but also the old HTML text
-    new_article = Map.put( new_article, "text", text )  # So put the new text in it in its place, and save it
+    new_article = Map.put( new_article, "page", text )  # So put the new text in it in its place, and save it
     {:ok, new_article} = Mongo.find_one_and_replace(:article, "my_app_db", old_article, new_article, [return_document: :after, upsert: :true])
     new_article
   end
@@ -148,7 +148,7 @@ defmodule SimpleMongoAppWeb.PageController do
         IO.puts "Not found - this just means displaying the editor, not hitting the button"
       else
         new_article = update id, params
-        t = new_article[ "text" ]
+        t = new_article[ "page" ]
         IO.puts "Found and replaced article #{id} with '#{t}'"
       end
     end
