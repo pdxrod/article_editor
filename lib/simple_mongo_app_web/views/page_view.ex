@@ -88,6 +88,9 @@ defmodule SimpleMongoAppWeb.PageView do
     list ++ empty_row()
   end
 
+# ------------------------------------------------------------------------------
+# private ^ public v
+
   def show_articles do
     try do
       articles()
@@ -95,6 +98,14 @@ defmodule SimpleMongoAppWeb.PageView do
       re in RuntimeError -> re
       [ { "decaf0ff", "Error: #{ re.message }" } ]
     end
+  end
+
+  def find_articles() do
+    a = show_articles()
+t = List.first a
+e = elem( t, 1 )
+IO.puts "find_articles() found #{e}"
+    a
   end
 
   def show_article( id ) do

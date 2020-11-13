@@ -15,5 +15,7 @@ defmodule SimpleMongoAppWeb.Router do
     get "/", PageController, :index
     post "/edit/:id", PageController, :edit
     get "/edit/:id", PageController, :edit
+    get "/find", PageController, :find
+    get "/find/:str", PageController, :find
   end
 end

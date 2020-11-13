@@ -2,35 +2,45 @@
   function keyUpSearch() {
     searchBox = document.getElementById( "_search" );
     val = searchBox.value;
+    $.ajax( {
+      url : "/find",
+      success : function( result ) {
+        document.getElementById( "_results" ).innerHTML = result;
+      }
+    } );
   }
 </script>
 
 <div class="jumbotron">
-  <% csrf_token = Phoenix.Controller.get_csrf_token() %>
-
   <span><label for='_search'>Search</label>
     <input onkeyup="keyUpSearch()" id='_search' name='_search' type='text' style="width: 515px;" value=''>
   </span>
 
-  <table class="table">
+  <div id="_results">
 
-    <tbody>
+    <% csrf_token = Phoenix.Controller.get_csrf_token() %>
 
-      <%= for article <- show_articles() do %>
-        <tr>
+    <table class="table">
+      <tbody>
 
-          <td class="text-left">
-            <% id = elem( article, 0 ) %>
-            <form id="form_<%= id %>" method="post" name="form_<%= id %>">
-              <%= elem( article, 1 ) |> raw %>
-              <input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= csrf_token %>">
-            </form>
-          </td>
+        <%= for article <- show_articles() do %>
+          <tr>
 
-        </tr>
+            <td class="text-left">
+              <% id = elem( article, 0 ) %>
+              <form id="form_<%= id %>" method="post" name="form_<%= id %>">
+                <%= elem( article, 1 ) |> raw %>
+                <input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= csrf_token %>">
+              </form>
+            </td>
 
-      <% end %>
+          </tr>
 
-    </tbody>
-  </table>
+        <% end %>
+
+      </tbody>
+    </table>
+
+  </div>
+
 </div>

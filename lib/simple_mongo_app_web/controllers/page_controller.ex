@@ -99,11 +99,6 @@ defmodule SimpleMongoAppWeb.PageController do
     end
   end
 
-    def index(conn, params) do
-      analyze_params params
-      render conn, "index.html"
-    end
-
   defp remove_unneeded_keys( args ) do
     map = Map.delete( args, "id" )
     map = Map.delete( map, "_csrf_token" )
@@ -155,6 +150,9 @@ defmodule SimpleMongoAppWeb.PageController do
     id
   end
 
+# ------------------------------------------------------------------------------
+# private ^ public v
+
     def edit( conn, params ) do
       key = find_button_key( Map.keys( params ))
       id = analyse_params params
@@ -162,6 +160,16 @@ defmodule SimpleMongoAppWeb.PageController do
       conn = render conn, "edit.html"
       IO.puts "edit params #{params[ key ]}"
       conn
+    end
+
+    def index(conn, params) do
+      analyze_params params
+      render conn, "index.html"
+    end
+
+    def find( conn, params ) do
+      analyze_params params
+      render conn, "find.html"
     end
 
 end
