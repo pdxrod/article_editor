@@ -100,8 +100,11 @@ defmodule SimpleMongoAppWeb.PageView do
   def show_article( id ) do
     cursor = Mongo.find(:article, "my_app_db", %{"_id" => id})
     list = cursor |> Enum.to_list()
-    article = List.first( list )[ "page" ]
-    article
+    article = List.first( list )
+    class = article[ "classification" ]
+    name = article[ "name" ]
+    page = article[ "page" ]
+    { class, name, page }
   end
 
 end
