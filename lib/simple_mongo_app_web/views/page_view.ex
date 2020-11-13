@@ -64,7 +64,7 @@ defmodule SimpleMongoAppWeb.PageView do
     id = String.slice str, 0..23
     str = String.slice str, 24..-1
     str = if str =~ @new_column_reg do
-      str # id is the first 24 characters of the string returned by stringify_keys - str is the rest of it
+      str
     else
       str <> @new_column_field
     end
@@ -73,7 +73,7 @@ defmodule SimpleMongoAppWeb.PageView do
     javascript = String.replace @reg_javascript_fn, "ID", id
     edit = String.replace @edit_button_field, "ID", id
     str = str <> save <> javascript <> edit <> "&nbsp;" <> del
-    [ { id, str } ]
+    [ { id, str } ] # id is the first 24 characters of the string returned by stringify_keys - str is the rest of i
   end
 
   defp stringify_list( list ) do
