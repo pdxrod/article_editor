@@ -1,13 +1,19 @@
 <script type="text/javascript">
-  function keyUpSearch() {
-    searchBox = document.getElementById( "_search" );
-    val = searchBox.value;
-    $.ajax( {
-      url : "/find",
-      success : function( result ) {
-        document.getElementById( "_results" ).innerHTML = result;
+  function getResults(){
+      var request = new XMLHttpRequest();
+      request.open('GET', '/find', true);
+      request.send(null);
+      request.onreadystatechange = function () {
+        if (request.readyState === 4 && request.status === 200) {
+            document.getElementById( "_results" ).innerHTML = request.responseText;
+        }
       }
-    } );
+  }
+
+  function keyUpSearch() {
+      searchBox = document.getElementById( "_search" );
+      val = searchBox.value;
+      getResults();
   }
 </script>
 
