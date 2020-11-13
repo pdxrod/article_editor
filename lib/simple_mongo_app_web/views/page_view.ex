@@ -1,16 +1,6 @@
 defmodule SimpleMongoAppWeb.PageView do
   use SimpleMongoAppWeb, :view
 
-  defp start_mongo do
-    Mongo.start_link(
-      name: :article,
-      database: "my_app_db",
-      hostname: "localhost",
-      username: "root",
-      password: "rootpassword"
-    )
-  end
-
   @new_column_reg ~r/<label.+new column.+input.+new_column.+/
   @new_column_field "<label style='width: 49%; float: left' for='new_column'>new column?</label> <input style='width: 49%; float: left;' id='new_column' name='new_column' type='text' value=''>\n<br/> "
   @dele_button_field "<span><button class='btn btn-default btn-xs' id='dele_button_ID' name='dele_button_ID' type='submit' style='background-color: #ff99cc; width: 80px;'>Delete</button></span>\n"
@@ -100,7 +90,6 @@ defmodule SimpleMongoAppWeb.PageView do
 
   def show_articles do
     try do
-      start_mongo()
       articles()
     rescue
       re in RuntimeError -> re
