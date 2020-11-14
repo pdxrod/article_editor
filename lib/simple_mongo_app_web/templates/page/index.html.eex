@@ -15,34 +15,23 @@
       val = searchBox.value;
       getResults();
   }
+
+  window.addEventListener('load',
+    function() {
+      getResults();
+    },
+    false
+  );
 </script>
 
 <div class="jumbotron">
   <span><label for='_search'>Search</label>
-    <input onkeyup="keyUpSearch()" id='_search' name='_search' type='text' style="width: 510px;" value=''>
+    <input onkeyup="keyUpSearch()" id='_search' name='_search' type='text' style="width: 507px;" value=''>
   </span>
 
   <% csrf_token = Phoenix.Controller.get_csrf_token() %>
 
   <div id="_results">
-
-    <table class="table">
-      <%= for article <- show_articles() do %>
-        <tr>
-
-          <td class="text-left">
-            <% id = elem( article, 0 ) %>
-            <form id="form_<%= id %>" method="post" name="form_<%= id %>">
-              <%= elem( article, 1 ) |> raw %>
-              <input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= csrf_token %>">
-            </form>
-          </td>
-
-        </tr>
-
-      <% end %>
-    </table>
-
   </div>
 
 </div>
