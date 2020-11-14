@@ -1,6 +1,6 @@
 <script type="text/javascript">
 
-  function getResults(){
+  function getResults(val){
     var request = new XMLHttpRequest();
     request.open('GET', '/find', true);
     request.send(null);
@@ -14,10 +14,10 @@
   function keyUpSearch() {
     searchBox = document.getElementById( "_search" );
     val = searchBox.value;
-    getResults();
+    getResults(val);
   }
 
-  getResults();
+  getResults('');
 
 </script>
 
