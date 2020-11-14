@@ -100,14 +100,6 @@ defmodule SimpleMongoAppWeb.PageView do
     end
   end
 
-  def find_articles() do
-    a = show_articles()
-t = List.first a
-e = elem( t, 1 )
-IO.puts "find_articles() found #{e}"
-    a
-  end
-
   def show_article( id ) do
     cursor = Mongo.find(:article, "my_app_db", %{"_id" => id})
     list = cursor |> Enum.to_list()

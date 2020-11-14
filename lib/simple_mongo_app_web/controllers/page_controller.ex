@@ -154,11 +154,11 @@ defmodule SimpleMongoAppWeb.PageController do
 # private ^ public v
 
     def edit( conn, params ) do
-      key = find_button_key( Map.keys( params ))
+      IO.puts "edit"
       id = analyse_params params
       conn = assign(conn, :id, id)
       conn = render conn, "edit.html"
-      IO.puts "edit params #{params[ key ]}"
+      IO.puts "edit params id #{ id }"
       conn
     end
 

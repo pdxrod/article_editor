@@ -3,7 +3,7 @@
 <table class="table">
   <tbody>
 
-    <%= for article <- find_articles() do %>
+    <%= for article <- show_articles() do %>
       <tr>
 
         <td class="text-left">

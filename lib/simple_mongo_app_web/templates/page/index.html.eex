@@ -27,24 +27,20 @@
   <div id="_results">
 
     <table class="table">
-      <tbody>
+      <%= for article <- show_articles() do %>
+        <tr>
 
-        <%= for article <- show_articles() do %>
-          <tr>
+          <td class="text-left">
+            <% id = elem( article, 0 ) %>
+            <form id="form_<%= id %>" method="post" name="form_<%= id %>">
+              <%= elem( article, 1 ) |> raw %>
+              <input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= csrf_token %>">
+            </form>
+          </td>
 
-            <td class="text-left">
-              <% id = elem( article, 0 ) %>
-              <form id="form_<%= id %>" method="post" name="form_<%= id %>">
-                <%= elem( article, 1 ) |> raw %>
-                <input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= csrf_token %>">
-              </form>
-            </td>
+        </tr>
 
-          </tr>
-
-        <% end %>
-
-      </tbody>
+      <% end %>
     </table>
 
   </div>
