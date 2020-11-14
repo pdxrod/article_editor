@@ -5,10 +5,10 @@ defmodule SimpleMongoAppWeb.PageView do
   @new_column_field "<label style='width: 49%; float: left' for='new_column'>new column?</label> <input style='width: 49%; float: left;' id='new_column' name='new_column' type='text' value=''>\n<br/> "
   @dele_button_field "<span><button class='btn btn-default btn-xs' id='dele_button_ID' name='dele_button_ID' type='submit' style='background-color: #ff99cc; width: 80px;'>Delete</button></span>\n"
   @save_button_field "<span><button class='btn btn-default btn-xs' id='save_button_ID' name='save_button_ID' type='submit' style='background-color: #00ffff; width: 80px;'>Save</button></span>\n"
-  @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick=\"reg_check(); return false;\" style='background-color: #66ffcc; width: 80px;'>Edit</button></span>"
+  @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick=\"reg_check_ID(); return false;\" style='background-color: #66ffcc; width: 80px;'>Edit</button></span>"
   @reg_javascript_fn """
   <script>
-      function reg_check() {
+      function reg_check_ID() {
         window.location = "/edit/ID";
         return false;
       }
