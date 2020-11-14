@@ -17,13 +17,15 @@
     getResults();
   }
 
+  getResults();
+
 </script>
 
 <div class="jumbotron">
   <span><label for='_search'>Search</label>
     <input onkeyup="keyUpSearch()" id='_search' name='_search' type='text' style="width: 507px;" value=''>
   </span>
-  <script>getResults();</script>
+
   <div id="_results">
   </div>
 </div>
