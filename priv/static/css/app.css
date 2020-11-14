@@ -1,4 +1,9 @@
-/* This file is for your main application css. */
+.container {
+  float: left;
+  text-align: left;
+  width: 100%;
+}
+
 /* Includes Bootstrap as well as some default style for the starter
  * application. This can be safely deleted to start fresh.
  */
