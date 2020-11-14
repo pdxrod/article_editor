@@ -19,12 +19,12 @@
 
 <div class="jumbotron">
   <span><label for='_search'>Search</label>
-    <input onkeyup="keyUpSearch()" id='_search' name='_search' type='text' style="width: 515px;" value=''>
+    <input onkeyup="keyUpSearch()" id='_search' name='_search' type='text' style="width: 513px;" value=''>
   </span>
 
-  <div id="_results">
+  <% csrf_token = Phoenix.Controller.get_csrf_token() %>
 
-    <% csrf_token = Phoenix.Controller.get_csrf_token() %>
+  <div id="_results">
 
     <table class="table">
       <tbody>
