@@ -1,37 +1,29 @@
 <script type="text/javascript">
+
   function getResults(){
-      var request = new XMLHttpRequest();
-      request.open('GET', '/find', true);
-      request.send(null);
-      request.onreadystatechange = function () {
-        if (request.readyState === 4 && request.status === 200) {
-            document.getElementById( "_results" ).innerHTML = request.responseText;
-        }
+    var request = new XMLHttpRequest();
+    request.open('GET', '/find', true);
+    request.send(null);
+    request.onreadystatechange = function () {
+      if (request.readyState === 4 && request.status === 200) {
+        document.getElementById( "_results" ).innerHTML = request.responseText;
       }
+    }
   }
 
   function keyUpSearch() {
-      searchBox = document.getElementById( "_search" );
-      val = searchBox.value;
-      getResults();
+    searchBox = document.getElementById( "_search" );
+    val = searchBox.value;
+    getResults();
   }
 
-  window.addEventListener('load',
-    function() {
-      getResults();
-    },
-    false
-  );
 </script>
 
 <div class="jumbotron">
   <span><label for='_search'>Search</label>
     <input onkeyup="keyUpSearch()" id='_search' name='_search' type='text' style="width: 507px;" value=''>
   </span>
-
-  <% csrf_token = Phoenix.Controller.get_csrf_token() %>
-
+  <script>getResults();</script>
   <div id="_results">
   </div>
-
 </div>

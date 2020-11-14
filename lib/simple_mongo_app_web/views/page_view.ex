@@ -5,16 +5,7 @@ defmodule SimpleMongoAppWeb.PageView do
   @new_column_field "<label style='width: 49%; float: left' for='new_column'>new column?</label> <input style='width: 49%; float: left;' id='new_column' name='new_column' type='text' value=''>\n<br/> "
   @dele_button_field "<span><button class='btn btn-default btn-xs' id='dele_button_ID' name='dele_button_ID' type='submit' style='background-color: #ff99cc; width: 80px;'>Delete</button></span>\n"
   @save_button_field "<span><button class='btn btn-default btn-xs' id='save_button_ID' name='save_button_ID' type='submit' style='background-color: #00ffff; width: 80px;'>Save</button></span>\n"
-  @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick=\"reg_check_ID(); return false;\" style='background-color: #66ffcc; width: 80px;'>Edit</button></span>"
-  @reg_javascript_fn """
-  <script>
-      function reg_check_ID() {
-        window.location = "/edit/ID";
-        return false;
-      }
-  // Thx https://stackoverflow.com/questions/27725127/redirect-using-window-location-doesnt-work
-  </script>
-  """
+  @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick=\"window.location = '/edit/ID'; return false;\" style='background-color: #66ffcc; width: 80px;'>Edit</button></span>"
 
   @types ~w[function nil integer binary bitstring list map float atom tuple pid port reference]
   for type <- @types do
@@ -60,9 +51,8 @@ defmodule SimpleMongoAppWeb.PageView do
     end
     del = String.replace @dele_button_field, "ID", id
     save = String.replace @save_button_field, "ID", id
-    javascript = String.replace @reg_javascript_fn, "ID", id
     edit = String.replace @edit_button_field, "ID", id
-    str = str <> save <> javascript <> edit <> "&nbsp;" <> del
+    str = str <> save <> edit <> "&nbsp;" <> del
     [ { id, str } ] # id is the first 24 characters of the string returned by stringify_keys - str is the rest of i
   end
 
