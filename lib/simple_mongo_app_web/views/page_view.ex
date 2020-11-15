@@ -79,13 +79,13 @@ defmodule SimpleMongoAppWeb.PageView do
     list ++ empty_row()
   end
 
-  defp select_articles( articles, str ) do
+  defp select_articles( articles, str \\ "" ) do
     case articles do
       [] -> []
       [hd | tl] ->
         article = elem( hd, 1 )
         if String.contains?( article, str ) do
-          [ hd ] ++ select_articles tl, str
+          [ hd ] ++ select_articles( tl, str )
         else
           select_articles tl, str
         end

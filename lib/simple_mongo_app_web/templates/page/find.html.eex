@@ -1,8 +1,10 @@
 <% csrf_token = Phoenix.Controller.get_csrf_token() %>
+
 <table class="table">
   <tbody>
-    <% for article <- show_articles( assigns[ :str ] ) do %>
+    <%= for article <- show_articles( assigns[ :str ] ) do %>
       <tr>
+
         <td class="text-left">
           <% id = elem( article, 0 ) %>
           <form id="form_<%= id %>" method="post" name="form_<%= id %>">
@@ -10,6 +12,7 @@
             <input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= csrf_token %>">
           </form>
         </td>
+
       </tr>
     <% end %>
   </tbody>
