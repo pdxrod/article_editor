@@ -1,24 +1,16 @@
 <% csrf_token = Phoenix.Controller.get_csrf_token() %>
-<% str = if assigns[ :str ], do: assigns[ :str ], else: ""  %>
 <table class="table">
   <tbody>
-    <%= for article <- show_articles() do %>
-      <% content = elem( article, 1 ) %>
-
-      <% if String.contains?( content, str ) do %>
-      Content contains <%= str %>
-        <tr>
-          <td class="text-left">
-            <% id = elem( article, 0 ) %>
-            <form id="form_<%= id %>" method="post" name="form_<%= id %>">
-              <%= content |> raw %>
-              <input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= csrf_token %>">
-            </form>
-          </td>
-        </tr>
-        <% else %>
-        Content doesn't contain <%= str %>
-      <% end %>
+    <% for article <- show_articles( assigns[ :str ] ) do %>
+      <tr>
+        <td class="text-left">
+          <% id = elem( article, 0 ) %>
+          <form id="form_<%= id %>" method="post" name="form_<%= id %>">
+            <%= elem( article, 1 ) |> raw %>
+            <input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= csrf_token %>">
+          </form>
+        </td>
+      </tr>
     <% end %>
   </tbody>
 </table>

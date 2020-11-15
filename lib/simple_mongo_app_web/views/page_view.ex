@@ -79,12 +79,25 @@ defmodule SimpleMongoAppWeb.PageView do
     list ++ empty_row()
   end
 
+  defp select_articles( articles, str ) do
+    case articles do
+      [] -> []
+      [hd | tl] ->
+        article = elem( hd, 1 )
+        if String.contains?( article, str ) do
+          [ hd ] ++ select_articles tl, str
+        else
+          select_articles tl, str
+        end
+    end
+  end
+
 # ------------------------------------------------------------------------------
 # private ^ public v
 
-  def show_articles do
+  def show_articles( str ) do
     try do
-      articles()
+      select_articles articles(), str
     rescue
       re in RuntimeError -> re
       [ { "decaf0ff", "Error: #{ re.message }" } ]
@@ -99,10 +112,6 @@ defmodule SimpleMongoAppWeb.PageView do
     name = article[ "name" ]
     page = article[ "page" ]
     { class, name, page }
-  end
-
-  def in_article?( article, str ) do
-    
   end
 
 end
