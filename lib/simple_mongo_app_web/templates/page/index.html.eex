@@ -2,7 +2,7 @@
 
   function getResults(val){
     var request = new XMLHttpRequest();
-    request.open('GET', '/find', true);
+    request.open('GET', '/find/' + val, true);
     request.send(null);
     request.onreadystatechange = function () {
       if (request.readyState === 4 && request.status === 200) {
@@ -23,7 +23,7 @@
 
 <div class="jumbotron">
   <span><label for='_search'>Search</label>
-    <input onkeyup="keyUpSearch()" id='_search' name='_search' type='text' style="width: 507px;" value=''>
+    <input onkeyup="keyUpSearch()" id='_search' name='_search' type='text' style="width: 500px;" value=''>
   </span>
 
   <div id="_results">

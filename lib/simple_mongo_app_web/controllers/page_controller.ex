@@ -74,10 +74,16 @@ defmodule SimpleMongoAppWeb.PageController do
 
   # This 'id = id <> <<0>>' turns "5f9d79c5a9f74f0bfb2cb5cc" into
   # <<53, 102, 57, 100, 55, 97, 100, 99, 97, 57, 102, 55, 52, 102, 48, 99, 54, 98, 57, 52, 54, 50, 51, 98, 0>>
-  def make_id_list_and_obj( id ) do
+  defp make_id_list_and_obj( id ) do
     id_list = id <> <<0>>
     obj_id = %ObjectId{ value: id }
     { id_list, obj_id }
+  end
+
+  defp find_str_key( keys ) do
+    Enum.find( keys, fn( element ) ->
+      match?( "str", element )
+    end)
   end
 
  # %{classification" => "man", "name" => "Joan", "new_column" => "gender", "save_button_5f9d7adca9f74f0c6b94623b" => ""}
@@ -86,7 +92,13 @@ defmodule SimpleMongoAppWeb.PageController do
     if id == @decaf0ff do
       id = find_id( Map.keys( params ), params, @dele_button_reg )
       if id == @decaf0ff do
-        IO.puts "Not found - this just means displaying the page, not hitting a button"
+        str = find_str_key Map.keys( params )
+        if str do
+          str = params[ "str" ]
+          IO.puts "Found str - it's #{ str }"
+        else
+          IO.puts "Not found - this just means displaying the page, not hitting a button"
+        end # REFACTOR THIS!
       else
         delete id
         IO.puts "Found and deleted article #{id}"
@@ -163,12 +175,23 @@ defmodule SimpleMongoAppWeb.PageController do
     end
 
     def index(conn, params) do
+      IO.puts "index()"
       analyze_params params
       render conn, "index.html"
     end
 
     def find( conn, params ) do
+      IO.puts "find()"
       analyze_params params
+      str = find_str_key Map.keys( params )
+      conn = if str do
+        str = params[ "str" ]
+        IO.puts "find() - found str #{str}"
+        assign( conn, :str, str )
+      else
+        IO.puts "find() - didn't find str"
+        assign( conn, :str, "" )
+      end
       render conn, "find.html"
     end
 

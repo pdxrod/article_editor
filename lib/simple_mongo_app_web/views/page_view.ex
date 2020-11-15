@@ -101,4 +101,8 @@ defmodule SimpleMongoAppWeb.PageView do
     { class, name, page }
   end
 
+  def in_article?( article, str ) do
+    
+  end
+
 end
