@@ -7,7 +7,7 @@ defmodule SimpleMongoAppWeb.PageView do
   var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', 'dele_button_ID'); m.setAttribute('value', 'delete'); m.setAttribute('id', 'dele_button_ID'); f.appendChild(m);
       m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_csrf_token'); m.setAttribute('value', 'CSRF_TOKEN'); m.setAttribute('id', '_csrf_token');   f.appendChild(m);
   f.submit(); }; return false;\"
-  style='float: right; background-color: #dd1111; text-align: center; color: #ffffff; padding: 2px; margin: 3px; margin-right: 13px; width: 80px;'>Delete</a>
+  style='float: right; background-color: #db7093; text-align: center; color: #ffffff; padding: 2px; margin: 3px; margin-right: 12px; width: 80px;'>Delete</a>
   """
   @save_button_field "<span><button class='btn btn-default btn-xs' id='save_button_ID' name='save_button_ID' type='submit' style='padding: 2px; margin: 3px; background-color: #00ffff; width: 80px;'>Save</button></span>\n"
   @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick=\"window.location = '/edit/ID'; return false;\" style='padding: 2px; margin: 3px; background-color: #66ffcc; width: 80px;'>Edit</button></span>"
