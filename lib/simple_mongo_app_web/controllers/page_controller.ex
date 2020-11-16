@@ -8,6 +8,11 @@ defmodule SimpleMongoAppWeb.PageController do
   @todo_button_reg ~r/.{4}_button_.+/
   @textarea_reg ~r/textarea_.+/
   @decaf0ff "decaf0ff"
+  @debugging true
+
+  defp debug( str ) do
+    if @debugging, do: IO.puts "\n#{str}"
+  end
 
   defp delete( id ) do
     Mongo.delete_one(:article, "my_app_db", %{_id: id})
@@ -106,16 +111,16 @@ defmodule SimpleMongoAppWeb.PageController do
         new_article = replace id, params
         c = new_article["classification"]
         n = new_article["name"]
-        IO.puts "Found and replaced article #{id}, #{c}: #{n}"
+        debug "Found and replaced article #{id}, #{c}: #{n}"
       :dele ->
         id = find_id( Map.keys( params ), params, @dele_button_reg )
         delete id
-        IO.puts "Found and deleted article #{id}"
+        debug "Found and deleted article #{id}"
       :str ->
         str = params[ "str" ]
-        IO.puts "Found parameter str - it's #{ str }"
+        debug "Found parameter str - it's #{ str }"
       _ ->
-        IO.puts "Not found - this just means displaying the page, not hitting a button"
+        debug "Not found - this just means displaying the page, not hitting a button"
     end
   end
 
@@ -157,15 +162,15 @@ defmodule SimpleMongoAppWeb.PageController do
   defp analyse_params( params ) do
     id = params[ "id" ]
     if id == nil do
-      IO.puts "Not found - this just means displaying the edit page, not hitting the button"
+      debug "Not found - this just means displaying the edit page, not hitting the button"
     else
       textarea_key = find_textarea_key Map.keys( params )
       if textarea_key == @decaf0ff do
-        IO.puts "Not found - this just means displaying the editor, not hitting the button"
+        debug "Not found - this just means displaying the editor, not hitting the button"
       else
         new_article = update id, params
         t = new_article[ "page" ]
-        IO.puts "Found and replaced article #{id} with '#{t}'"
+        debug "Found and replaced article #{id} with '#{t}'"
       end
     end
     id
@@ -175,30 +180,30 @@ defmodule SimpleMongoAppWeb.PageController do
 # private ^ public v
 
     def edit( conn, params ) do
-      IO.puts "edit"
+      debug "edit"
       id = analyse_params params
       conn = assign(conn, :id, id)
       conn = render conn, "edit.html"
-      IO.puts "edit params id #{ id }"
+      debug "edit params id #{ id }"
       conn
     end
 
     def index(conn, params) do
-      IO.puts "index()"
+      debug "index()"
       analyze_params params
       render conn, "index.html"
     end
 
     def find( conn, params ) do
-      IO.puts "find()"
+      debug "find()"
       analyze_params params
       str = find_str_key Map.keys( params )
       conn = if str do
         str = params[ "str" ]
-        IO.puts "find() - parameter str #{str}"
+        debug "find() - parameter str #{str}"
         assign( conn, :str, str )
       else
-        IO.puts "find() - no parameter str"
+        debug "find() - no parameter str"
         assign( conn, :str, "" )
       end
       render conn, "find.html"

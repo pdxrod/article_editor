@@ -6,6 +6,11 @@ defmodule SimpleMongoAppWeb.PageView do
   @dele_button_field "<span><button class='btn btn-default btn-xs' id='dele_button_ID' name='dele_button_ID' type='submit' style='background-color: #ff99cc; width: 80px;'>Delete</button></span>\n"
   @save_button_field "<span><button class='btn btn-default btn-xs' id='save_button_ID' name='save_button_ID' type='submit' style='background-color: #00ffff; width: 80px;'>Save</button></span>\n"
   @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick=\"window.location = '/edit/ID'; return false;\" style='background-color: #66ffcc; width: 80px;'>Edit</button></span>"
+  @debugging true
+
+  defp debug( str ) do
+    if @debugging, do: IO.puts "\n#{str}"
+  end
 
   @types ~w[function nil integer binary bitstring list map float atom tuple pid port reference]
   for type <- @types do
@@ -34,7 +39,7 @@ defmodule SimpleMongoAppWeb.PageView do
   defp stringify_keys( keys, map ) do
     case keys do
       [] -> ""
-      [hd | tl] ->
+      [_ | tl] ->
         key = List.first( keys )
         stringify_key_val( key, map[ key ]) <> stringify_keys( tl, map )
     end
@@ -91,11 +96,11 @@ defmodule SimpleMongoAppWeb.PageView do
     str = String.replace str, "value=", ""
     str = String.replace str, "''", " "
     str = String.replace str, "\"\"", " "
-    if String.contains?( str, "hello" ), do:  IO.puts "str contains hello - index: #{elem(:binary.match(str, "hello"), 0)}\n"
+    if String.contains?( str, "hello" ), do:  debug "str contains hello - index: #{elem(:binary.match(str, "hello"), 0)}\n"
     str
   end
 
-  defp select_articles( articles, str \\ "" ) do
+  defp select_articles( articles, str ) do
     case articles do
       [] -> []
       [hd | tl] ->
