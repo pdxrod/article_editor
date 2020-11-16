@@ -195,10 +195,10 @@ defmodule SimpleMongoAppWeb.PageController do
       str = find_str_key Map.keys( params )
       conn = if str do
         str = params[ "str" ]
-        IO.puts "find() - found str #{str}"
+        IO.puts "find() - parameter str #{str}"
         assign( conn, :str, str )
       else
-        IO.puts "find() - didn't find str"
+        IO.puts "find() - no parameter str"
         assign( conn, :str, "" )
       end
       render conn, "find.html"

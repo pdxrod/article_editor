@@ -79,13 +79,29 @@ defmodule SimpleMongoAppWeb.PageView do
     list ++ empty_row()
   end
 
+  def get_values( html, reg ) do
+    one_line = String.replace html, "\n", " "
+    values = Regex.scan reg, one_line
+    values = List.flatten values
+    str = Enum.join values
+    str = String.replace str, "value=", ""
+    str = String.replace str, "''", " "
+    str = String.replace str, "\"\"", " "
+    if String.contains?( html, "hello" ), do:  IO.puts "article contains hello - get_values:\n#{str}\n"
+    
+    str
+  end
+
   defp select_articles( articles, str \\ "" ) do
     case articles do
       [] -> []
       [hd | tl] ->
-        article = elem( hd, 1 )
-        if str != "", do: IO.puts "select_articles #{article}"
-        if String.contains?( article, str ) do
+        article = elem( hd, 1 ) # Sometimes it's value='value', sometimes it's value="value" (double quotes)
+        quotes =       get_values( article, ~r/value='.+'/ )
+        doublequotes = get_values( article, ~r/value=".+"/ )
+
+
+        if String.contains?( quotes, str ) || String.contains?( doublequotes, str ) do
           [ hd ] ++ select_articles( tl, str )
         else
           select_articles tl, str
