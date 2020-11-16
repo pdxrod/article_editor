@@ -6,10 +6,11 @@ defmodule SimpleMongoAppWeb.PageView do
   <a href='/' onclick=\"if (confirm('are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;
   var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', 'dele_button_ID'); m.setAttribute('value', 'delete'); m.setAttribute('id', 'dele_button_ID'); f.appendChild(m);
       m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', '_csrf_token'); m.setAttribute('value', 'CSRF_TOKEN'); m.setAttribute('id', '_csrf_token');   f.appendChild(m);
-  f.submit(); }; return false;\">Delete</a>
+  f.submit(); }; return false;\"
+  style='float: right; background-color: #dd1111; text-align: center; color: #ffffff; padding: 2px; margin: 3px; margin-right: 13px; width: 80px;'>Delete</a>
   """
-  @save_button_field "<span><button class='btn btn-default btn-xs' id='save_button_ID' name='save_button_ID' type='submit' style='background-color: #00ffff; width: 80px;'>Save</button></span>\n"
-  @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick=\"window.location = '/edit/ID'; return false;\" style='background-color: #66ffcc; width: 80px;'>Edit</button></span>"
+  @save_button_field "<span><button class='btn btn-default btn-xs' id='save_button_ID' name='save_button_ID' type='submit' style='padding: 2px; margin: 3px; background-color: #00ffff; width: 80px;'>Save</button></span>\n"
+  @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick=\"window.location = '/edit/ID'; return false;\" style='padding: 2px; margin: 3px; background-color: #66ffcc; width: 80px;'>Edit</button></span>"
   @new_column_field "<label style='width: 29%; float: left' for='new_column'>new column?</label> <input style='width: 69%; float: left;' id='new_column' name='new_column' type='text' value=''><br/>\n "
   @new_column_reg ~r/<label.+new column.+input.+new_column.+/
   @debugging true
@@ -67,7 +68,7 @@ defmodule SimpleMongoAppWeb.PageView do
     del = String.replace del, "CSRF_TOKEN", csrf_token
     save = String.replace @save_button_field, "ID", id
     edit = String.replace @edit_button_field, "ID", id
-    str = str <> save <> edit <> "&nbsp;" <> del
+    str = str <> "<div>" <> save <> edit <> del <> "</div><br/>\n"
     [ { id, str } ] # id is the first 24 characters of the string returned by stringify_keys - str is the rest of i
   end
 
