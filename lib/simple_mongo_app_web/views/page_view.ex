@@ -84,6 +84,7 @@ defmodule SimpleMongoAppWeb.PageView do
       [] -> []
       [hd | tl] ->
         article = elem( hd, 1 )
+        if str != "", do: IO.puts "select_articles #{article}"
         if String.contains?( article, str ) do
           [ hd ] ++ select_articles( tl, str )
         else

@@ -31,7 +31,7 @@ defmodule SimpleMongoAppWeb.PageController do
   defp find_id( keys, map, reg ) do
     case keys do
       [] ->
-        @decaf0ff
+        nil
       [hd | tl] ->
         if hd =~ reg do
           String.slice( hd, 12..-1)
@@ -86,28 +86,36 @@ defmodule SimpleMongoAppWeb.PageController do
     end)
   end
 
- # %{classification" => "man", "name" => "Joan", "new_column" => "gender", "save_button_5f9d7adca9f74f0c6b94623b" => ""}
+# This is a bit redundant, but it's easier to read than a nest of elses
+  defp params?( params ) do
+    save = find_id( Map.keys( params ), params, @save_button_reg )
+    dele = find_id( Map.keys( params ), params, @dele_button_reg )
+    str = find_str_key Map.keys( params )
+    result = if save, do: :save, else: nil
+    result = if dele, do: :dele, else: result
+    result = if str, do: :str, else: result
+    result
+  end
+
+# %{classification" => "man", "name" => "Joan", "new_column" => "gender", "save_button_5f9d7adca9f74f0c6b94623b" => ""}
+# This function does more than just 'analyze' the params - it changes the database
   defp analyze_params( params ) do
-    id = find_id( Map.keys( params ), params, @save_button_reg )
-    if id == @decaf0ff do
-      id = find_id( Map.keys( params ), params, @dele_button_reg )
-      if id == @decaf0ff do
-        str = find_str_key Map.keys( params )
-        if str do
-          str = params[ "str" ]
-          IO.puts "Found str - it's #{ str }"
-        else
-          IO.puts "Not found - this just means displaying the page, not hitting a button"
-        end # REFACTOR THIS!
-      else
+    case params?( params ) do
+      :save ->
+        id = find_id( Map.keys( params ), params, @save_button_reg )
+        new_article = replace id, params
+        c = new_article["classification"]
+        n = new_article["name"]
+        IO.puts "Found and replaced article #{id}, #{c}: #{n}"
+      :dele ->
+        id = find_id( Map.keys( params ), params, @dele_button_reg )
         delete id
         IO.puts "Found and deleted article #{id}"
-      end
-    else
-      new_article = replace id, params
-      c = new_article["classification"]
-      n = new_article["name"]
-      IO.puts "Found and replaced article #{id} with #{c}: #{n}"
+      :str ->
+        str = params[ "str" ]
+        IO.puts "Found str - it's #{ str }"
+      _ ->
+        IO.puts "Not found - this just means displaying the page, not hitting a button"
     end
   end
 
@@ -145,6 +153,7 @@ defmodule SimpleMongoAppWeb.PageController do
     new_article
   end
 
+# This function does more than just 'analyse' the params - it changes the database
   defp analyse_params( params ) do
     id = params[ "id" ]
     if id == nil do
