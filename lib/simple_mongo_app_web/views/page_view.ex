@@ -2,7 +2,7 @@ defmodule SimpleMongoAppWeb.PageView do
   use SimpleMongoAppWeb, :view
 
   @new_column_reg ~r/<label.+new column.+input.+new_column.+/
-  @new_column_field "<label style='width: 49%; float: left' for='new_column'>new column?</label> <input style='width: 49%; float: left;' id='new_column' name='new_column' type='text' value=''>\n<br/> "
+  @new_column_field "<label style='width: 29%; float: left' for='new_column'>new column?</label> <input style='width: 69%; float: left;' id='new_column' name='new_column' type='text' value=''><br/>\n "
   @dele_button_field "<span><button class='btn btn-default btn-xs' id='dele_button_ID' name='dele_button_ID' type='submit' style='background-color: #ff99cc; width: 80px;'>Delete</button></span>\n"
   @save_button_field "<span><button class='btn btn-default btn-xs' id='save_button_ID' name='save_button_ID' type='submit' style='background-color: #00ffff; width: 80px;'>Save</button></span>\n"
   @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick=\"window.location = '/edit/ID'; return false;\" style='background-color: #66ffcc; width: 80px;'>Edit</button></span>"
@@ -22,7 +22,7 @@ defmodule SimpleMongoAppWeb.PageView do
           "page" ->
             "<input id='page' name='page' type='hidden' value='#{val}'><br/>\n"
           _ ->
-            "<span><label style='width: 49%; float: left' for='#{key}'>#{key}</label> <input style='width: 49%; float: left;' id='#{key}' name='#{key}' type='text' value='#{val}'></span><br/>\n"
+            "<span><label style='width: 29%; float: left' for='#{key}'>#{key}</label> <input style='width: 69%; float: left;' id='#{key}' name='#{key}' type='text' value='#{val}'></span><br/>\n"
         end
       else
         str = Base.encode16(val.value, case: :lower)
@@ -69,7 +69,7 @@ defmodule SimpleMongoAppWeb.PageView do
     map = %{ name: "", classification: "" }
     str = stringify_keys( Map.keys( map ), map )
     save = String.replace @save_button_field, "ID", id
-    label = "<div><b>New article</b></div>\n<br/>"
+    label = "<div><b>New article</b></div><br/>\n"
     [ { id, label <> str <> save } ]
   end
 
@@ -79,16 +79,19 @@ defmodule SimpleMongoAppWeb.PageView do
     list ++ empty_row()
   end
 
+# What I really want to do is get rid of all the HTML except the contents of the value fields in
+# the inputs classification and name, plus any 'new columns', and the value field in hidden input 'page'
   def get_values( html, reg ) do
     one_line = String.replace html, "\n", " "
+    one_line = String.replace one_line, ~r/<button.+\/button>/, ""
+    one_line = String.replace one_line, ~r/style='.+?'/, ""
     values = Regex.scan reg, one_line
     values = List.flatten values
     str = Enum.join values
     str = String.replace str, "value=", ""
     str = String.replace str, "''", " "
     str = String.replace str, "\"\"", " "
-    if String.contains?( html, "hello" ), do:  IO.puts "article contains hello - get_values:\n#{str}\n"
-    
+    if String.contains?( str, "hello" ), do:  IO.puts "str contains hello - index: #{elem(:binary.match(str, "hello"), 0)}\n"
     str
   end
 
@@ -99,9 +102,8 @@ defmodule SimpleMongoAppWeb.PageView do
         article = elem( hd, 1 ) # Sometimes it's value='value', sometimes it's value="value" (double quotes)
         quotes =       get_values( article, ~r/value='.+'/ )
         doublequotes = get_values( article, ~r/value=".+"/ )
-
-
-        if String.contains?( quotes, str ) || String.contains?( doublequotes, str ) do
+        bothquotes = quotes <> " " <> doublequotes
+        if String.contains?( bothquotes, str ) do
           [ hd ] ++ select_articles( tl, str )
         else
           select_articles tl, str

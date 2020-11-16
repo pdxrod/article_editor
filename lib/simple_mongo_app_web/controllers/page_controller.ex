@@ -113,7 +113,7 @@ defmodule SimpleMongoAppWeb.PageController do
         IO.puts "Found and deleted article #{id}"
       :str ->
         str = params[ "str" ]
-        IO.puts "Found str - it's #{ str }"
+        IO.puts "Found parameter str - it's #{ str }"
       _ ->
         IO.puts "Not found - this just means displaying the page, not hitting a button"
     end
