@@ -7,8 +7,7 @@ defmodule SimpleMongoAppWeb.PageController do
   @text_button_reg ~r/text_button_.+/
   @todo_button_reg ~r/.{4}_button_.+/
   @textarea_reg ~r/textarea_.+/
-  @decaf0ff "decaf0ff"
-  @debugging true
+  @debugging false
 
   defp debug( str ) do
     if @debugging, do: IO.puts "\n#{str}"
@@ -135,7 +134,7 @@ defmodule SimpleMongoAppWeb.PageController do
 
   defp find_textarea_key( keys ) do
     case keys do
-      [] -> @decaf0ff
+      [] -> nil
       [hd | tl] ->
         if hd =~ @textarea_reg do
           hd
@@ -165,8 +164,8 @@ defmodule SimpleMongoAppWeb.PageController do
       debug "Not found - this just means displaying the edit page, not hitting the button"
     else
       textarea_key = find_textarea_key Map.keys( params )
-      if textarea_key == @decaf0ff do
-        debug "Not found - this just means displaying the editor, not hitting the button"
+      if textarea_key == nil do
+        debug "Not found - this just means displaying the editor, not hitting any buttons"
       else
         new_article = update id, params
         t = new_article[ "page" ]

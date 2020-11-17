@@ -13,7 +13,7 @@ defmodule SimpleMongoAppWeb.PageView do
   @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick=\"window.location = '/edit/ID'; return false;\" style='padding: 2px; margin: 3px; background-color: #66ffcc; width: 80px;'>Edit</button></span>"
   @new_column_field "<label style='width: 29%; float: left' for='new_column'>new column?</label> <input style='width: 69%; float: left;' id='new_column' name='new_column' type='text' value=''><br/>\n "
   @new_column_reg ~r/<label.+new column.+input.+new_column.+/
-  @debugging true
+  @debugging false
 
   defp debug( str ) do
     if @debugging, do: IO.puts "\n#{str}"
@@ -24,17 +24,37 @@ defmodule SimpleMongoAppWeb.PageView do
     defp typeof(x) when unquote(:"is_#{type}")(x), do: unquote(type)
   end
 
+  def urlify( str ) do
+    down = String.downcase str
+    if String.starts_with?( down, "http") do
+      "<a href='#{ str }'>#{ str }</a>"
+    else
+      if String.starts_with?( down, "<a href") do
+        str
+      else
+        "<a href='http://#{ str }'>#{ str }</a>"
+      end
+    end
+  end
+
+  defp htmlify_key_val( key, val ) do
+    "<span><label style='width: 29%; float: left' for='#{key}'>#{key}</label> <input style='width: 69%; float: left;' id='#{key}' name='#{key}' type='text' value='#{val}'></span><br/>\n"
+  end
+
   defp stringify_key_val( key, val ) do
     if val == nil do
       ""
     else
       if typeof( val ) == "binary" do
         case key do
-          "_id" -> val
+          "_id" ->
+            val
           "page" ->
             "<input id='page' name='page' type='hidden' value='#{val}'><br/>\n"
+          "url" ->
+            htmlify_key_val( key, val ) <> urlify( val ) <> "<br/>\n"
           _ ->
-            "<span><label style='width: 29%; float: left' for='#{key}'>#{key}</label> <input style='width: 69%; float: left;' id='#{key}' name='#{key}' type='text' value='#{val}'></span><br/>\n"
+            htmlify_key_val( key, val )
         end
       else
         str = Base.encode16(val.value, case: :lower)
@@ -62,7 +82,6 @@ defmodule SimpleMongoAppWeb.PageView do
     else
       str <> @new_column_field
     end
-
     del = String.replace @dele_button_field, "ID", id
     csrf_token = Phoenix.Controller.get_csrf_token()
     del = String.replace del, "CSRF_TOKEN", csrf_token
