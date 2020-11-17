@@ -204,12 +204,20 @@ defmodule SimpleMongoAppWeb.PageController do
     id
   end
 
+  defp trim_vals( map ) do
+    list = Map.to_list map
+    new_list = Enum.map( list, fn(a) -> {elem(a, 0), String.trim(elem(a, 1))} end )
+    new_map = Enum.into( new_list, %{} )
+    new_map
+  end
+
 # ------------------------------------------------------------------------------
 # private ^ public v
 
     def edit( conn, params ) do
       debug "edit"
-      id = analyse_params params
+      args = trim_vals params
+      id = analyse_params args
       conn = assign(conn, :id, id)
       conn = render conn, "edit.html"
       debug "edit params id #{ id }"
@@ -217,13 +225,14 @@ defmodule SimpleMongoAppWeb.PageController do
     end
 
     def index(conn, params) do
+      args = trim_vals params
       debug "index()"
-      if already_exists_with_this_name_and_classification?( params ) do
+      if already_exists_with_this_name_and_classification?( args ) do
         debug "This article already exists"
         conn = assign(conn, :error, "This article already exists")
       else
         debug "Either creating a new article, or updating an old one"
-        analyze_params params
+        analyze_params args
         conn = assign(conn, :error, nil)
       end
       render conn, "index.html"
@@ -231,10 +240,11 @@ defmodule SimpleMongoAppWeb.PageController do
 
     def find( conn, params ) do
       debug "find()"
-      analyze_params params
-      str = find_str_key Map.keys( params )
+      args = trim_vals params
+      analyze_params args
+      str = find_str_key Map.keys( args )
       conn = if str do
-        str = params[ "str" ]
+        str = args[ "str" ]
         debug "find() - parameter str #{str}"
         assign( conn, :str, str )
       else
