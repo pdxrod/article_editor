@@ -7,7 +7,7 @@ defmodule SimpleMongoAppWeb.PageController do
   @text_button_reg ~r/text_button_.+/
   @todo_button_reg ~r/.{4}_button_.+/
   @textarea_reg ~r/textarea_.+/
-  @debugging false
+  @debugging true
 
   defp debug( str ) do
     if @debugging, do: IO.puts "\n#{str}"
@@ -15,6 +15,22 @@ defmodule SimpleMongoAppWeb.PageController do
 
   defp delete( id ) do
     Mongo.delete_one(:article, "my_app_db", %{_id: id})
+  end
+
+  def already_exists_with_this_name_and_classification?( args ) do
+    if nil == args[ "classification" ] || nil == args[ "name" ] do
+      false
+    else
+      id = find_id( Map.keys( args ), args, @save_button_reg )
+      if id do
+        false # If the id exists, we're updating an article, so the name & classification can stay the same
+      else    # Otherwise, we're creating a new one, so it can't use an existing name/classifcation combo
+        map = %{ classification: args[ "classification" ], name: args[ "name" ] }
+        cursor = Mongo.find(:article, "my_app_db", map)
+        list = cursor |> Enum.to_list()
+        list != []
+      end
+    end
   end
 
   defp replace( id, params ) do # Also creates a new article from the empty form
@@ -189,7 +205,14 @@ defmodule SimpleMongoAppWeb.PageController do
 
     def index(conn, params) do
       debug "index()"
-      analyze_params params
+      if already_exists_with_this_name_and_classification?( params ) do
+        debug "This article already exists"
+        conn = assign(conn, :error, "This article already exists")
+      else
+
+        analyze_params params
+        conn = assign(conn, :error, nil)
+      end
       render conn, "index.html"
     end
 

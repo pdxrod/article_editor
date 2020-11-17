@@ -1,3 +1,3 @@
 # Article Editor
 
-See also https://github.com/pdxrod/simple_mongo_app
+See also https://github.com/pdxrod/-ruby_or_elixir_for_mongo_app
