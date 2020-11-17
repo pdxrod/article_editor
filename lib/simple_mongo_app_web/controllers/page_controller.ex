@@ -206,7 +206,7 @@ defmodule SimpleMongoAppWeb.PageController do
 
   defp trim_vals( map ) do
     list = Map.to_list map
-    new_list = Enum.map( list, fn(a) -> {elem(a, 0), String.trim(elem(a, 1))} end )
+    new_list = Enum.map( list, fn(a) -> {String.trim(elem(a, 0)), String.trim(elem(a, 1))} end )
     new_map = Enum.into( new_list, %{} )
     new_map
   end
