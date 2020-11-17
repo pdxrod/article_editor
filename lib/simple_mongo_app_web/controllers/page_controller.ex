@@ -17,18 +17,31 @@ defmodule SimpleMongoAppWeb.PageController do
     Mongo.delete_one(:article, "my_app_db", %{_id: id})
   end
 
+  def new_article?( args ) do
+    id = find_id( Map.keys( args ), args, @save_button_reg )
+    existing = Mongo.find_one(:article, "my_app_db", %{_id: id})
+    ! existing
+  end
+
+# 1. We are updating an old article - name and classification can stay the same - return false
+# 2. We are creating a new article -
+#   a. there is no other article in the database with this name and classification - return false
+#   b. there is another article in the database with this name and classifcation - return true
   def already_exists_with_this_name_and_classification?( args ) do
     if nil == args[ "classification" ] || nil == args[ "name" ] do
+      debug "already_exists_with_this_name_and_classification? 1"
       false
     else
-      id = find_id( Map.keys( args ), args, @save_button_reg )
-      if id do
-        false # If the id exists, we're updating an article, so the name & classification can stay the same
-      else    # Otherwise, we're creating a new one, so it can't use an existing name/classifcation combo
+      if new_article?( args ) do
+        debug "already_exists_with_this_name_and_classification? 2"
         map = %{ classification: args[ "classification" ], name: args[ "name" ] }
         cursor = Mongo.find(:article, "my_app_db", map)
         list = cursor |> Enum.to_list()
-        list != []
+        debug "already_exists_with_this_name_and_classification? #{ Enum.count( list ) > 0 }"
+        Enum.count( list ) > 0
+      else
+        debug "already_exists_with_this_name_and_classification? 3"
+        false
       end
     end
   end
@@ -209,7 +222,7 @@ defmodule SimpleMongoAppWeb.PageController do
         debug "This article already exists"
         conn = assign(conn, :error, "This article already exists")
       else
-
+        debug "Either creating a new article, or updating an old one"
         analyze_params params
         conn = assign(conn, :error, nil)
       end
