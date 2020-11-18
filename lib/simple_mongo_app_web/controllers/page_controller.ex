@@ -7,7 +7,7 @@ defmodule SimpleMongoAppWeb.PageController do
   @text_button_reg ~r/text_button_.+/
   @todo_button_reg ~r/.{4}_button_.+/
   @textarea_reg ~r/textarea_.+/
-  @debugging true
+  @debugging false
 
   defp debug( str ) do
     if @debugging, do: IO.puts "\n#{str}"
