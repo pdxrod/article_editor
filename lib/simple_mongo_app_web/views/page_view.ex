@@ -50,7 +50,7 @@ defmodule SimpleMongoAppWeb.PageView do
           "_id" ->
             val
           "page" ->
-            "<input id='page' name='page' style='display: none;' value='#{val}'><br/>\n"
+            "<textarea id='page' name='page' style='display: none;'>#{val}</textarea><br/>\n"
           "url" ->
             htmlify_key_val( key, val ) <> urlify( val ) <> "<br/>\n"
           _ ->
