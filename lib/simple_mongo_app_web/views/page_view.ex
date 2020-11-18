@@ -157,6 +157,14 @@ defmodule SimpleMongoAppWeb.PageView do
     end
   end
 
+  def display_page( html ) do
+    page = String.replace( html, "<html", "<div" )
+    page = String.replace( page, "</html", "</div" )
+    page = String.replace( html, "<body", "<div" )
+    page = String.replace( page, "</body", "</div" )
+    page
+  end
+
   def show_article( id ) do
     cursor = Mongo.find(:article, "my_app_db", %{"_id" => id})
     list = cursor |> Enum.to_list()

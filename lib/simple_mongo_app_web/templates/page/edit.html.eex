@@ -8,14 +8,22 @@
 
     <% csrf_token = Phoenix.Controller.get_csrf_token() %>
     <input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= csrf_token %>">
+    <% classification = elem( article, 0 )
+       name =           elem( article, 1 )
+       contents =       elem( article, 2 ) %>
 
-    <b><%= elem( article, 0 ) %></b>
-       <%= elem( article, 1 ) %>
-    <textarea id="textarea_<%= id %>" name="textarea_<%= id %>" rows="17" cols="60">
-       <%= elem( article, 2 ) %>
-    </textarea>
+    <div>
+      <span style='width: 49%; float: left'>
+        <b><%= classification %></b>
+         <%= name %>
+        <textarea id="textarea_<%= id %>" name="textarea_<%= id %>" rows="17" cols="60">
+           <%= contents %>
+        </textarea>
+      </span>
+      <span style='width: 49%; float: left'><%= display_page( contents ) |> raw() %></span>
+     </div>
 
-    <script type="text/javascript">
+     <script type="text/javascript">
           tinyMCE.init( {
               content_css: "/css/master.css",
               mode : "textareas",
@@ -34,7 +42,7 @@
                 return false;
               }
               // Thx https://stackoverflow.com/questions/27725127/redirect-using-window-location-doesnt-work
-    </script>
+     </script>
 
     <br/>
     <span><button class="btn btn-default btn-s" id="back_button_<%= id %>" name="back_button_<%= id %>" onclick="reg_check(); return false;" style='background-color: #99ffcc; width: 80px;'>&larr; Back</button></span>
