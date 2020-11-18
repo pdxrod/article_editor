@@ -158,11 +158,15 @@ defmodule SimpleMongoAppWeb.PageView do
   end
 
   def display_page( html ) do
-    page = String.replace( html, "<html", "<div" )
-    page = String.replace( page, "</html", "</div" )
-    page = String.replace( html, "<body", "<div" )
-    page = String.replace( page, "</body", "</div" )
-    page
+    if nil == html do
+      ""
+    else
+      page = String.replace( html, "<html", "<div" )
+      page = String.replace( page, "</html", "</div" )
+      page = String.replace( html, "<body", "<div" )
+      page = String.replace( page, "</body", "</div" )
+      page
+    end
   end
 
   def show_article( id ) do
