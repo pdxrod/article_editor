@@ -29,9 +29,46 @@ defmodule SimpleMongoApp.Utils do
     ! mt?( thing )
   end
 
-  def apply_regex( line ) do
-    regex = ~r/^(http|https|ftp)$/
-    Regex.replace regex, line, "<a target='_blank' href='\\1'>\\1</a>"
+  def contains_href?( text ) do
+    down = String.downcase text
+    String.contains?( down, "href=" ) || String.contains?( down, "href =" )
+  end
+
+  @http_regex ~r/^(http|https|ftp)$/
+  @link_regex ~r/[A-Za-z0-9-].+/
+  @space_regex ~r/\s+/
+
+  def linkables?( text ) do
+    list = Regex.scan @link_regex, text
+    list = List.flatten list
+    case list do
+      [] -> []
+      _ ->
+        space = List.first list
+        String.split( space, @space_regex )
+    end
+  end
+
+  def replace_with_link( line, link ) do
+    String.replace line, link, "<a href='http://#{ link }'>#{ link }</a>"
+  end
+
+  def replace_linkables( line, linkables ) do
+    Enum.map( line, &replace_with_link( &1, linkables ) )
+  end
+
+  def apply_regexes( line ) do
+    linkables = linkables? line
+    replaced = cond do
+      contains_href?( line ) ->
+        line
+      0 == length( linkables ) ->
+        line
+      true ->
+        replaced = replace_linkables line, linkables
+        Regex.replace @http_regex, replaced, "<a target='_blank' href='\\1'>\\1</a>"
+    end
+    replaced
   end
 
   def regex_apply( line, function ) do
@@ -40,7 +77,7 @@ defmodule SimpleMongoApp.Utils do
 
   def auto_url!( html ) do
     lines = String.split html, "\n"
-    list = Enum.map(lines, fn(line) -> regex_apply( line, &apply_regex/1 ) end)
+    list = Enum.map(lines, fn(line) -> regex_apply( line, &apply_regexes/1 ) end)
     Enum.join list, "\n"
   end
 
