@@ -32,7 +32,6 @@ defmodule ArticleTest do
   <p>some html text</p>
   <p>some more</p>
   <p>hello</p>
-  <p><a href="http://google.com">goodbye</a></p>
   <p>&nbsp;</p>
     <ul>
     <li>this</li>
@@ -41,18 +40,6 @@ defmodule ArticleTest do
     <li>list</li>
     </ul>
   <p>&nbsp;</p>
-  <table border="0" cellspacing="8" cellpadding="4" width="88" align="left">
-    <tbody>
-    <tr>
-    <td></td>
-    <td></td>
-    </tr>
-    <tr>
-    <td></td>
-    <td>table</td>
-    </tr>
-    </tbody>
-  </table>
   """
 
   describe "articles" do

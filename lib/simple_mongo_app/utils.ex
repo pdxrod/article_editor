@@ -1,7 +1,7 @@
 defmodule SimpleMongoApp.Utils do
 
   def endings do
-    ["com", "org", "info", "edu", "uk", "au", "tv", "gov", "es", "za", "media", "me", "my", "ru", "ch", "cloud", "tr",
+    ["com", "org", "info", "edu", "uk", "au", "tv", "gov", "es", "za", "media", "me", "my", "ru", "ch", "cloud", "tr", "online",
      "international", "vn", "xxx", "co", "coop", "mil", "biz", "nz", "us", "net", "il", "it", "ps", "pn", "de", "fr", "th"]
   end
 
@@ -27,6 +27,21 @@ defmodule SimpleMongoApp.Utils do
 
   def notmt?( thing ) do
     ! mt?( thing )
+  end
+
+  def apply_regex( line ) do
+    regex = ~r/^(http|https|ftp)$/
+    Regex.replace regex, line, "<a target='_blank' href='\\1'>\\1</a>"
+  end
+
+  def regex_apply( line, function ) do
+    function.( line )
+  end
+
+  def auto_url!( html ) do
+    lines = String.split html, "\n"
+    list = Enum.map(lines, fn(line) -> regex_apply( line, &apply_regex/1 ) end)
+    Enum.join list, "\n"
   end
 
 end
