@@ -1,5 +1,6 @@
 defmodule SimpleMongoAppWeb.PageView do
   use SimpleMongoAppWeb, :view
+  alias SimpleMongoApp.Utils
 
   #  @dele_button_field "<span><button class='btn btn-default btn-xs' id='dele_button_ID' name='dele_button_ID' type='submit' style='background-color: #ff99cc; width: 80px;'>Delete</button></span>\n"
   @dele_button_field """
@@ -17,11 +18,6 @@ defmodule SimpleMongoAppWeb.PageView do
 
   defp debug( str ) do
     if @debugging, do: IO.puts "\n#{str}"
-  end
-
-  @types ~w[function nil integer binary bitstring list map float atom tuple pid port reference]
-  for type <- @types do
-    defp typeof(x) when unquote(:"is_#{type}")(x), do: unquote(type)
   end
 
   def urlify( str ) do
@@ -45,7 +41,7 @@ defmodule SimpleMongoAppWeb.PageView do
     if val == nil do
       ""
     else
-      if typeof( val ) == "binary" do
+      if Utils.typeof( val ) == "binary" do
         case key do
           "_id" ->
             val
