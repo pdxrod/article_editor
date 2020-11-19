@@ -163,8 +163,16 @@ defmodule SimpleMongoAppWeb.PageView do
     else
       page = String.replace( html, "<html", "<div" )
       page = String.replace( page, "</html", "</div" )
-      page = String.replace( html, "<body", "<div" )
+      page = String.replace( page, "<body", "<div" )
       page = String.replace( page, "</body", "</div" )
+      page = String.replace( page, "<head", "<div" )
+      page = String.replace( page, "</head", "</div" )
+      page = String.replace( page, "<HTML", "<div" )
+      page = String.replace( page, "</HTML", "</div" )
+      page = String.replace( page, "<BODY", "<div" )
+      page = String.replace( page, "</BODY", "</div" )
+      page = String.replace( page, "<HEAD", "<div" )
+      page = String.replace( page, "</HEAD", "</div" )
       page
     end
   end
