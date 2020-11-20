@@ -34,8 +34,8 @@ defmodule SimpleMongoApp.Utils do
     String.contains?( down, "href=" ) || String.contains?( down, "href =" )
   end
 
-  @http_regex ~r/^(http|https|ftp)$/
-  @link_regex ~r/[A-Za-z0-9-].+/
+  @http_regex ~r/^(https|http|ftp):\/\/[^\s]+\.[^\s]+$/
+  @link_regex ~r/^[^\s]+\.[^\s]+$/
   @space_regex ~r/\s+/
 
   def linkables?( text ) do
@@ -53,12 +53,8 @@ defmodule SimpleMongoApp.Utils do
     end
   end
 
-  def replace_with_link( line, link ) do
-    String.replace line, link, "<a href='http://#{ link }'>#{ link }</a>"
-  end
-
-  def replace_linkables( list, linkables ) do
-    Enum.map( list, &replace_with_link( &1, linkables ) )
+  def replace_linkables( line, linkables ) do
+    Enum.map( linkables, fn(link) -> String.replace line, link, "<a href='http://#{ link }'>#{ link }</a>" end )
   end
 
   def apply_regexes( line ) do
@@ -67,7 +63,7 @@ defmodule SimpleMongoApp.Utils do
       0 == length( linkables ) ->
         line
       true ->
-        linked = replace_linkables [ line ], linkables
+        linked = replace_linkables line, linkables
         # if length( linked ) > 0 do
         #   Regex.replace @http_regex, List.first( linked ), "<a target='_blank' href='\\1'>\\1</a>"
         # end
