@@ -72,7 +72,7 @@ defmodule ArticleTest do
       assert [] = Utils.linkables? "some text"
       assert [] = Utils.linkables? "some text <a target='_blank' href=\"http://fredbloggs.co.th\">fredbloggs.co.th</a> some more text"
       assert ["foo.com", "bar.co.uk"]== Utils.linkables? " hello foo.com bye bar.co.uk "
-      assert [" hello <a target='_blank' href='http://foo.com'>foo.com</a> bye <a target='_blank' href='http://bar.co.uk'>bar.co.uk</a>"] == Utils.replace_linkables " hello foo.com bye bar.co.uk ",  ["foo.com", "bar.co.uk"]
+      assert " hello <a target='_blank' href='http://foo.com'>foo.com</a> bye bar.co.uk  hello foo.com bye <a target='_blank' href='http://bar.co.uk'>bar.co.uk</a> " == Utils.replace_linkables " hello foo.com bye bar.co.uk ",  ["foo.com", "bar.co.uk"]
     end
 
     test "auto-urling html" do
