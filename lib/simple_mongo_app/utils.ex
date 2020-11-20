@@ -51,8 +51,24 @@ defmodule SimpleMongoApp.Utils do
     end
   end
 
+# Avoid this - "http://joebloggs.co.nz" becoming href='"http://joebloggs.co.nz"'
+  def strip_extraneous_quotes( text ) do
+    stripped = if String.starts_with?( text, ["\"", "'"] ) do
+                 String.slice( text, 1..-1 )
+               else
+                 text
+               end
+    stripped = if String.ends_with?( stripped, ["\"", "'"] ) do
+                 String.slice( stripped, 0..-2 )
+               else
+                 stripped
+               end
+    stripped
+  end
+
   def replace_linkables( line, linkables ) do
-    map = Enum.map( linkables, fn(link) -> if link =~ @proto_regex do
+    map = Enum.map( linkables, fn(link) -> link = strip_extraneous_quotes( link )
+                                           if link =~ @proto_regex do
                                              String.replace line, link, "<a target='_blank' href='#{ link }'>#{ link }</a>"
                                            else
                                              String.replace line, link, "<a target='_blank' href='http://#{ link }'>#{ link }</a>"

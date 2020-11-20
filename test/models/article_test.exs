@@ -73,6 +73,8 @@ defmodule ArticleTest do
       assert [] = Utils.linkables? "some text <a target='_blank' href=\"http://fredbloggs.co.th\">fredbloggs.co.th</a> some more text"
       assert ["foo.com", "bar.co.uk"]== Utils.linkables? " hello foo.com bye bar.co.uk "
       assert " hello <a target='_blank' href='http://foo.com'>foo.com</a> bye bar.co.uk  hello foo.com bye <a target='_blank' href='http://bar.co.uk'>bar.co.uk</a> " == Utils.replace_linkables " hello foo.com bye bar.co.uk ",  ["foo.com", "bar.co.uk"]
+      assert "http://foo.com" == Utils.strip_extraneous_quotes  "'http://foo.com'"
+      assert "http://foo.com" == Utils.strip_extraneous_quotes  "\"http://foo.com\""
     end
 
     test "auto-urling html" do
@@ -85,11 +87,11 @@ defmodule ArticleTest do
     test "auto-urling page" do
       urled = Utils.auto_url! @page
       assert String.contains? urled, "<p>some html text</p>"
-      assert String.contains? urled, "some text <a target='_blank' href=\"http://fredbloggs.co.th\">fredbloggs.co.th</a> some more text"
-      assert String.contains? urled, "<a target='_blank' href=\"https://jimbloggs.co.uk\">https://jimbloggs.co.uk</a>"
-      assert String.contains? urled, "<a target='_blank' href=\"http://joebloggs.co.nz\">http://joebloggs.co.nz</a>"
+      assert String.contains? urled, "some text <a target='_blank' href='http://fredbloggs.co.th'>fredbloggs.co.th</a> some more text"
+      assert String.contains? urled, "<a target='_blank' href='https://jimbloggs.co.uk'>https://jimbloggs.co.uk</a>"
+      assert String.contains? urled, "<a target='_blank' href='http://joebloggs.co.nz'>http://joebloggs.co.nz</a>"
       assert String.contains? urled, "<a target='_blank' href='http://janebloggs.com'>http://janebloggs.com</a>"
-      assert String.contains? urled, "<a target='_blank' href=\"http://sandrabloggs.com.au\">sandra bloggs</a>"
+      assert String.contains? urled, "<a href=\"http://sandrabloggs.com.au\">sandra bloggs</a>"
       assert String.contains? urled, "Sara's website in a new tab: <a target='_blank' href='http://sarabloggs.biz'>sara bloggs</a>"
     end
 
