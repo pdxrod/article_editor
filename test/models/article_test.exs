@@ -67,8 +67,14 @@ defmodule ArticleTest do
     test "each auto-urling function separately" do
       assert true == Utils.contains_href?  "<a target='_blank' href='http://sarabloggs.biz'>sara bloggs</a>"
       assert true == Utils.contains_href? "<a href = 'http://sarabloggs.biz'>sara bloggs</a>"
+      assert true == Utils.contains_href? "<A HREF=\"http://sarabloggs.biz\">sara bloggs</A>"
       assert false == Utils.contains_href? "There is an html attribute called href"
-
+      assert [] = Utils.linkables? "some text"
+      assert [] = Utils.linkables? "some text <a target='_blank' href=\"http://fredbloggs.co.th\">fredbloggs.co.th</a> some more text"
+      assert ["https://jimbloggs.co.uk"] == Utils.linkables? "hello https://jimbloggs.co.uk jim"
+      assert "this is <a href='http://fredbloggs.com.au'>http://fredbloggs.com.au</a>" == Utils.replace_with_link "this is http://fredbloggs.com.au", "http://fredbloggs.com.au"
+      assert "this is http://fredbloggs.com.au" == Utils.replace_with_link "this is http://fredbloggs.com.au", "http://jimbloggs.com.au"
+      assert ["<a target='_blank' href='http://sarabloggs.biz'>http://sarabloggs.biz</a>"] == Utils.replace_linkables ["hello http://sarabloggs.biz"], ["http://sarabloggs.biz"]
     end
 
     test "auto-urling html" do

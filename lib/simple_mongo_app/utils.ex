@@ -39,13 +39,17 @@ defmodule SimpleMongoApp.Utils do
   @space_regex ~r/\s+/
 
   def linkables?( text ) do
-    list = Regex.scan @link_regex, text
-    list = List.flatten list
-    case list do
-      [] -> []
-      _ ->
-        space = List.first list
-        String.split( space, @space_regex )
+    if contains_href? text do
+      []
+    else
+      list = Regex.scan @link_regex, text
+      list = List.flatten list
+      case list do
+        [] -> []
+        _ ->
+          space = List.first list
+          String.split( space, @space_regex )
+      end
     end
   end
 
@@ -60,8 +64,6 @@ defmodule SimpleMongoApp.Utils do
   def apply_regexes( line ) do
     linkables = linkables? line
     replaced = cond do
-      contains_href?( line ) ->
-        line
       0 == length( linkables ) ->
         line
       true ->
