@@ -34,27 +34,25 @@ defmodule SimpleMongoApp.Utils do
     String.contains?( down, "href=" ) || String.contains?( down, "href =" )
   end
 
-  @http_regex ~r/^(https|http|ftp):\/\/[^\s]+\.[^\s]+$/
-  @link_regex ~r/^[^\s]+\.[^\s]+$/
-  @space_regex ~r/\s+/
+  @http_regex      ~r/^(https|http|ftp):\/\/[^\s]+\.[^\s]+$/ # to match string only containing a full url
+  @http_line_regex ~r/(https|http|ftp):\/\/[^\s]+\.[^\s]+/   # to match a line containing a full url
+  @url_regex       ~r/^[^\s]+\.[^\s]+$/                      # to match string only containing a url
+  @url_line_regex  ~r/[^\s]+\.[^\s]+/                        # to match a line containing a url
+  @space_regex     ~r/\s+/
 
   def linkables?( text ) do
     if contains_href? text do
       []
     else
-      list = Regex.scan @link_regex, text
-      list = List.flatten list
-      case list do
-        [] -> []
-        _ ->
-          space = List.first list
-          String.split( space, @space_regex )
-      end
+# Regex.scan ~r/[^\s]+\.[^\s]+/, " hello foo.com bye bar.co.uk "
+# -> [["foo.com"], ["bar.co.uk"]]
+      list = Regex.scan @url_line_regex, text
+      List.flatten list
     end
   end
 
   def replace_linkables( line, linkables ) do
-    Enum.map( linkables, fn(link) -> String.replace line, link, "<a href='http://#{ link }'>#{ link }</a>" end )
+    Enum.map( linkables, fn(link) -> String.replace line, link, "<a target='_blank' href='http://#{ link }'>#{ link }</a>" end )
   end
 
   def apply_regexes( line ) do
