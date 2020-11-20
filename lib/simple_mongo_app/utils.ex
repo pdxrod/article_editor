@@ -53,8 +53,8 @@ defmodule SimpleMongoApp.Utils do
     String.replace line, link, "<a href='http://#{ link }'>#{ link }</a>"
   end
 
-  def replace_linkables( line, linkables ) do
-    Enum.map( line, &replace_with_link( &1, linkables ) )
+  def replace_linkables( list, linkables ) do
+    Enum.map( list, &replace_with_link( &1, linkables ) )
   end
 
   def apply_regexes( line ) do
@@ -65,19 +65,21 @@ defmodule SimpleMongoApp.Utils do
       0 == length( linkables ) ->
         line
       true ->
-        replaced = replace_linkables line, linkables
-        Regex.replace @http_regex, replaced, "<a target='_blank' href='\\1'>\\1</a>"
+        linked = replace_linkables [ line ], linkables
+        # if length( linked ) > 0 do
+        #   Regex.replace @http_regex, List.first( linked ), "<a target='_blank' href='\\1'>\\1</a>"
+        # end
     end
     replaced
   end
 
-  def regex_apply( line, function ) do
+  def apply_regex( line, function ) do
     function.( line )
   end
 
   def auto_url!( html ) do
     lines = String.split html, "\n"
-    list = Enum.map(lines, fn(line) -> regex_apply( line, &apply_regexes/1 ) end)
+    list = Enum.map(lines, fn(line) -> apply_regex( line, &apply_regexes/1 ) end)
     Enum.join list, "\n"
   end
 

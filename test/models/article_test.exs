@@ -2,7 +2,9 @@ defmodule ArticleTest do
   use SimpleMongoAppWeb.ConnCase
   alias SimpleMongoApp.Utils
 
-  @html """
+  @page """
+  <html><head></head>
+  <body>
   <table style="border-color: #ff0000; border-width: 0px;" border="0" cellspacing="4" cellpadding="1" frame="above">
     <tbody>
     <tr>
@@ -22,12 +24,12 @@ defmodule ArticleTest do
     </tbody>
   </table>
 
-  fredbloggs.co.th
+  some text fredbloggs.co.th some more text
   https://jimbloggs.co.uk
-  "http://joebloggs.co.nz"
-  'http://janebloggs.com'
+   Hello this is "http://joebloggs.co.nz" a web page
+     'http://janebloggs.com'
   <a href="http://sandrabloggs.com.au">sandra bloggs</a>
-  <a href='http://sarabloggs.biz'>sara bloggs</a>
+  Sara's website in a new tab: <a target='_blank' href='http://sarabloggs.biz'>sara bloggs</a>
 
   <p>some html text</p>
   <p>some more</p>
@@ -40,6 +42,14 @@ defmodule ArticleTest do
     <li>list</li>
     </ul>
   <p>&nbsp;</p>
+  </body>
+  </html>
+  """
+
+  @html """
+    <a target='_blank' href='http://sarabloggs.biz'>sara bloggs</a>
+    some text fredbloggs.co.th some more text
+    https://jimbloggs.co.uk
   """
 
   describe "articles" do
@@ -54,16 +64,32 @@ defmodule ArticleTest do
       assert "tuple" == Utils.typeof( {:foo, "Hello"} )
     end
 
-    test "auto-urling" do
-      urled = Utils.auto_url! @html
-      assert String.contains? urled, "<p>some html text</p>"
-      assert String.contains? urled, "<a href=\"http://fredbloggs.co.th\">fredbloggs.co.th</a>"
-      assert String.contains? urled, "<a href=\"https://jimbloggs.co.uk\">https://jimbloggs.co.uk</a>"
-      assert String.contains? urled, "<a href=\"http://joebloggs.co.nz\">http://joebloggs.co.nz</a>"
-      assert String.contains? urled, "<a href='http://janebloggs.com'>http://janebloggs.com</a>"
-      assert String.contains? urled, "<a href=\"http://sandrabloggs.com.au\">sandra bloggs</a>"
-      assert String.contains? urled, "<a href='http://sarabloggs.biz'>sara bloggs</a>"
+    test "each auto-urling function separately" do
+      assert true == Utils.contains_href?  "<a target='_blank' href='http://sarabloggs.biz'>sara bloggs</a>"
+      assert true == Utils.contains_href? "<a href = 'http://sarabloggs.biz'>sara bloggs</a>"
+      assert false == Utils.contains_href? "There is an html attribute called href"
+
     end
+
+    test "auto-urling html" do
+      urled = Utils.auto_url! @html
+      assert String.contains? urled, "<a target='_blank' href='http://sarabloggs.biz'>sara bloggs</a>"
+      assert String.contains? urled, "some text <a target='_blank' href=\"http://fredbloggs.co.th\">fredbloggs.co.th</a> some more text"
+      assert String.contains? urled, "<a target='_blank' href=\"https://jimbloggs.co.uk\">https://jimbloggs.co.uk</a>"
+    end
+
+    test "auto-urling page" do
+      urled = Utils.auto_url! @page
+      assert String.contains? urled, "<p>some html text</p>"
+      assert String.contains? urled, "some text <a target='_blank' href=\"http://fredbloggs.co.th\">fredbloggs.co.th</a> some more text"
+      assert String.contains? urled, "<a target='_blank' href=\"https://jimbloggs.co.uk\">https://jimbloggs.co.uk</a>"
+      assert String.contains? urled, "<a target='_blank' href=\"http://joebloggs.co.nz\">http://joebloggs.co.nz</a>"
+      assert String.contains? urled, "<a target='_blank' href='http://janebloggs.com'>http://janebloggs.com</a>"
+      assert String.contains? urled, "<a target='_blank' href=\"http://sandrabloggs.com.au\">sandra bloggs</a>"
+      assert String.contains? urled, "Sara's website in a new tab: <a target='_blank' href='http://sarabloggs.biz'>sara bloggs</a>"
+    end
+
+
 
   end
 
