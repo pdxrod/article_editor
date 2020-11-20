@@ -44,15 +44,15 @@ defmodule SimpleMongoApp.Utils do
     if contains_href? text do
       []
     else
-# Regex.scan ~r/[^\s]+\.[^\s]+/, " hello foo.com bye bar.co.uk "
-# -> [["foo.com"], ["bar.co.uk"]]
+          ## Regex.scan ~r/[^\s]+\.[^\s]+/, " hello foo.com bye bar.co.uk " -> [["foo.com"], ["bar.co.uk"]]
       list = Regex.scan @url_line_regex, text
       List.flatten list
     end
   end
 
   def replace_linkables( line, linkables ) do
-    Enum.map( linkables, fn(link) -> String.replace line, link, "<a target='_blank' href='http://#{ link }'>#{ link }</a>" end )
+    map = Enum.map( linkables, fn(link) -> String.replace line, link, "<a target='_blank' href='http://#{ link }'>#{ link }</a>" end )
+    Enum.join map, ""
   end
 
   def apply_regexes( line ) do
@@ -61,10 +61,7 @@ defmodule SimpleMongoApp.Utils do
       0 == length( linkables ) ->
         line
       true ->
-        linked = replace_linkables line, linkables
-        # if length( linked ) > 0 do
-        #   Regex.replace @http_regex, List.first( linked ), "<a target='_blank' href='\\1'>\\1</a>"
-        # end
+        replace_linkables line, linkables
     end
     replaced
   end
