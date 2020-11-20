@@ -77,9 +77,9 @@ defmodule ArticleTest do
 
     test "auto-urling html" do
       urled = Utils.auto_url! @html
+      assert String.contains? urled, "some text <a target='_blank' href='http://fredbloggs.co.th'>fredbloggs.co.th</a> some more text"
       assert String.contains? urled, "<a target='_blank' href='http://sarabloggs.biz'>sara bloggs</a>"
-      assert String.contains? urled, "some text <a target='_blank' href=\"http://fredbloggs.co.th\">fredbloggs.co.th</a> some more text"
-      assert String.contains? urled, "<a target='_blank' href=\"https://jimbloggs.co.uk\">https://jimbloggs.co.uk</a>"
+      assert String.contains? urled, "<a target='_blank' href='https://jimbloggs.co.uk'>https://jimbloggs.co.uk</a>"
     end
 
     test "auto-urling page" do

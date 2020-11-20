@@ -34,6 +34,7 @@ defmodule SimpleMongoApp.Utils do
     String.contains?( down, "href=" ) || String.contains?( down, "href =" )
   end
 
+  @proto_regex     ~r/(https|http|ftp):\/\//
   @http_regex      ~r/^(https|http|ftp):\/\/[^\s]+\.[^\s]+$/ # to match string only containing a full url
   @http_line_regex ~r/(https|http|ftp):\/\/[^\s]+\.[^\s]+/   # to match a line containing a full url
   @url_regex       ~r/^[^\s]+\.[^\s]+$/                      # to match string only containing a url
@@ -51,7 +52,12 @@ defmodule SimpleMongoApp.Utils do
   end
 
   def replace_linkables( line, linkables ) do
-    map = Enum.map( linkables, fn(link) -> String.replace line, link, "<a target='_blank' href='http://#{ link }'>#{ link }</a>" end )
+    map = Enum.map( linkables, fn(link) -> if link =~ @proto_regex do
+                                             String.replace line, link, "<a target='_blank' href='#{ link }'>#{ link }</a>"
+                                           else
+                                             String.replace line, link, "<a target='_blank' href='http://#{ link }'>#{ link }</a>"
+                                           end
+                                           end )
     Enum.join map, ""
   end
 
