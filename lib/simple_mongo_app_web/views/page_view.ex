@@ -23,12 +23,12 @@ defmodule SimpleMongoAppWeb.PageView do
   def urlify( str ) do
     down = String.downcase str
     if String.starts_with?( down, "http") do
-      "<a href='#{ str }'>#{ str }</a>"
+      "<a target='_blank' href='#{ str }'>#{ str }</a>"
     else
-      if String.starts_with?( down, "<a href") do
+      if String.starts_with?( down, "<a ") do
         str
       else
-        "<a href='http://#{ str }'>#{ str }</a>"
+        "<a target='_blank' href='http://#{ str }'>#{ str }</a>"
       end
     end
   end
