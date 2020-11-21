@@ -9,16 +9,8 @@ defmodule ArticleTest do
     <tbody>
     <tr>
     <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
     </tr>
     <tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
     <td>table</td>
     </tr>
     </tbody>
@@ -30,18 +22,11 @@ defmodule ArticleTest do
      'http://janebloggs.com'
   <a href="http://sandrabloggs.com.au">sandra bloggs</a>
   Sara's website in a new tab: <a target='_blank' href='http://sarabloggs.biz'>sara bloggs</a>
+  <p>tarquinbloggs.net</p>
+  HTTP://CAPITAL-LETTERS.COM
 
   <p>some html text</p>
   <p>some more</p>
-  <p>hello</p>
-  <p>&nbsp;</p>
-    <ul>
-    <li>this</li>
-    <li>is</li>
-    <li>a&nbsp;</li>
-    <li>list</li>
-    </ul>
-  <p>&nbsp;</p>
   </body>
   </html>
   """
@@ -65,6 +50,9 @@ defmodule ArticleTest do
     end
 
     test "each auto-urling function separately" do
+      assert "foo.com" = Utils.strip_tags "<p>foo.com</p>"
+      assert "foo.com" = Utils.strip_tags "<EM>foo.com</EM>"
+      assert "http://foo.com" = Utils.strip_tags "<B><u>http://foo.com</u></b>"
       assert true == Utils.contains_href?  "<a target='_blank' href='http://sarabloggs.biz'>sara bloggs</a>"
       assert true == Utils.contains_href? "<a href = 'http://sarabloggs.biz'>sara bloggs</a>"
       assert true == Utils.contains_href? "<A HREF=\"http://sarabloggs.biz\">sara bloggs</A>"
@@ -73,8 +61,11 @@ defmodule ArticleTest do
       assert [] = Utils.linkables? "some text <a target='_blank' href=\"http://fredbloggs.co.th\">fredbloggs.co.th</a> some more text"
       assert ["foo.com", "bar.co.uk"]== Utils.linkables? " hello foo.com bye bar.co.uk "
       assert " hello <a target='_blank' href='http://foo.com'>foo.com</a> bye bar.co.uk  hello foo.com bye <a target='_blank' href='http://bar.co.uk'>bar.co.uk</a> " == Utils.replace_linkables " hello foo.com bye bar.co.uk ",  ["foo.com", "bar.co.uk"]
-      assert "http://foo.com" == Utils.strip_extraneous_quotes  "'http://foo.com'"
-      assert "http://foo.com" == Utils.strip_extraneous_quotes  "\"http://foo.com\""
+      assert "http://foo.com" == Utils.strip_extraneous_quotes_and_tags "'http://foo.com'"
+      assert "http://foo.com" == Utils.strip_extraneous_quotes_and_tags "\"http://foo.com\""
+      assert "http://foo.com" == Utils.strip_extraneous_quotes_and_tags "http://foo.com"
+      assert "http://foo.com" == Utils.strip_extraneous_quotes_and_tags "<p>http://foo.com</p>"
+      assert "foo.com" == Utils.strip_extraneous_quotes_and_tags  "<p>foo.com</p>"
     end
 
     test "auto-urling html" do
@@ -87,6 +78,8 @@ defmodule ArticleTest do
     test "auto-urling page" do
       urled = Utils.auto_url! @page
       assert String.contains? urled, "<p>some html text</p>"
+      assert String.contains? urled, "<a target='_blank' href='HTTP://CAPITAL-LETTERS.COM'>HTTP://CAPITAL-LETTERS.COM</a>"
+      assert String.contains? urled, "<a target='_blank' href='http://tarquinbloggs.net'>tarquinbloggs.net</a>"
       assert String.contains? urled, "some text <a target='_blank' href='http://fredbloggs.co.th'>fredbloggs.co.th</a> some more text"
       assert String.contains? urled, "<a target='_blank' href='https://jimbloggs.co.uk'>https://jimbloggs.co.uk</a>"
       assert String.contains? urled, "<a target='_blank' href='http://joebloggs.co.nz'>http://joebloggs.co.nz</a>"
@@ -95,8 +88,5 @@ defmodule ArticleTest do
       assert String.contains? urled, "Sara's website in a new tab: <a target='_blank' href='http://sarabloggs.biz'>sara bloggs</a>"
     end
 
-
-
   end
-
 end

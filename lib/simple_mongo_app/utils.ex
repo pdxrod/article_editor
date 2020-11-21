@@ -34,11 +34,12 @@ defmodule SimpleMongoApp.Utils do
     String.contains?( down, "href=" ) || String.contains?( down, "href =" )
   end
 
-  @proto_regex     ~r/(https|http|ftp):\/\//
-  @http_regex      ~r/^(https|http|ftp):\/\/[^\s]+\.[^\s]+$/ # to match string only containing a full url
-  @http_line_regex ~r/(https|http|ftp):\/\/[^\s]+\.[^\s]+/   # to match a line containing a full url
-  @url_regex       ~r/^[^\s]+\.[^\s]+$/                      # to match string only containing a url
-  @url_line_regex  ~r/[^\s]+\.[^\s]+/                        # to match a line containing a url
+  @proto_regex     ~r/(https|http|ftp):\/\//i
+  @http_regex      ~r/^(https|http|ftp):\/\/[^\s]+\.[^\s]+$/i # to match string only containing a full url
+  @http_line_regex ~r/(https|http|ftp):\/\/[^\s]+\.[^\s]+/i   # to match a line containing a full url
+  @url_regex       ~r/^[^\s]+\.[^\s]+$/                       # to match string only containing a url
+  @url_line_regex  ~r/[^\s]+\.[^\s]+/                         # to match a line containing a url
+  @tag_regex       ~r/(<\/?[A-Z][A-Z0-9]*>)/i
   @space_regex     ~r/\s+/
 
   def linkables?( text ) do
@@ -51,8 +52,11 @@ defmodule SimpleMongoApp.Utils do
     end
   end
 
-# Avoid this - "http://joebloggs.co.nz" becoming href='"http://joebloggs.co.nz"'
-  def strip_extraneous_quotes( text ) do
+  def strip_tags( text ) do
+    Regex.replace @tag_regex, text, ""
+  end
+
+  def strip_extraneous_quotes_and_tags( text ) do
     stripped = if String.starts_with?( text, ["\"", "'"] ) do
                  String.slice( text, 1..-1 )
                else
@@ -63,11 +67,11 @@ defmodule SimpleMongoApp.Utils do
                else
                  stripped
                end
-    stripped
+    strip_tags stripped
   end
 
   def replace_linkables( line, linkables ) do
-    map = Enum.map( linkables, fn(link) -> link = strip_extraneous_quotes( link )
+    map = Enum.map( linkables, fn(link) -> link = strip_extraneous_quotes_and_tags( link )
                                            if link =~ @proto_regex do
                                              String.replace line, link, "<a target='_blank' href='#{ link }'>#{ link }</a>"
                                            else
