@@ -179,7 +179,7 @@ defmodule SimpleMongoAppWeb.PageView do
     article = List.first( list )
     class = article[ "classification" ]
     name = article[ "name" ]
-    page = article[ "page" ]
+    page = article[ "page" ] |> Utils.auto_url!()
     { class, name, page }
   end
 

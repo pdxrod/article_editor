@@ -57,7 +57,7 @@ defmodule SimpleMongoAppWeb.PageController do
     end
     new_article = Map.merge( new_article, new_map )
     {:ok, new_article} = Mongo.find_one_and_replace(:article, "my_app_db", old_article, new_article, [return_document: :after, upsert: :true])
-#     {:ok, new_article} = Mongo.find_one_and_update( :article, "my_app_db", old_article,  %{"$set" => new_article}, [return_document: :after])
+#   {:ok, new_article} = Mongo.find_one_and_update( :article, "my_app_db", old_article,  %{"$set" => new_article}, [return_document: :after])
     new_article
   end
 
