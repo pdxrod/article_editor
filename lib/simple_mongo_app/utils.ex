@@ -97,9 +97,13 @@ defmodule SimpleMongoApp.Utils do
   end
 
   def auto_url!( html ) do
-    lines = String.split html, "\n"
-    list = Enum.map(lines, fn(line) -> apply_regex( line, &apply_regexes/1 ) end)
-    Enum.join list, "\n"
+    if nil == html do
+      ""
+    else
+      lines = String.split html, "\n"
+      list = Enum.map(lines, fn(line) -> apply_regex( line, &apply_regexes/1 ) end)
+      Enum.join list, "\n"
+    end
   end
 
 end
