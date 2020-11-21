@@ -227,13 +227,17 @@ defmodule SimpleMongoAppWeb.PageController do
     def index(conn, params) do
       args = trim_vals params
       debug "index()"
-      if already_exists_with_this_name_and_classification?( args ) do
-        debug "This article already exists"
-        conn = assign(conn, :error, "This article already exists")
+      conn = if args[ "c" ] do
+        conn
       else
-        debug "Either creating a new article, or updating an old one"
-        analyze_params args
-        conn = assign(conn, :error, nil)
+        if already_exists_with_this_name_and_classification?( args ) do
+          debug "This article already exists"
+          assign(conn, :error, "This article already exists")
+        else
+          debug "Either creating a new article, or updating an old one"
+          analyze_params args
+          assign(conn, :error, nil)
+        end
       end
       render conn, "index.html"
     end
