@@ -113,8 +113,15 @@ defmodule SimpleMongoAppWeb.PageView do
     list ++ empty_row()
   end
 
+  def classifications do
+    list = Mongo.find(:article, "my_app_db", %{}) |> Enum.to_list()
+    values = Enum.flat_map( list, fn(article) -> [article["classification"]] end )
+    set = MapSet.new values
+    set
+  end
+
 # What I really want to do is get rid of all the HTML except the contents of the value fields in
-# the inputs classification and name, plus any 'new columns', and the value field in hidden input 'page'
+# the inputs classification and name, plus any 'new columns', and the value field in hidden textarea 'page'
   def get_values( html, reg ) do
     one_line = String.replace html, "\n", " "
     one_line = String.replace one_line, ~r/<button.+\/button>/, ""
