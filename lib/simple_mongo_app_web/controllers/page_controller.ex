@@ -19,8 +19,8 @@ defmodule SimpleMongoAppWeb.PageController do
 
   def new_article?( args ) do
     id = find_id( Map.keys( args ), args, @save_button_reg )
-    existing = Mongo.find_one(:article, "my_app_db", %{_id: id})
-    ! existing
+    exists = Mongo.find_one(:article, "my_app_db", %{_id: id})
+    ! exists
   end
 
 # 1. We are updating an old article - name and classification can stay the same - return false
@@ -115,7 +115,7 @@ defmodule SimpleMongoAppWeb.PageController do
 
   defp find_str_key( keys ) do
     Enum.find( keys, fn( element ) ->
-      match?( "str", element )
+      match?( "s", element )
     end)
   end
 
@@ -126,7 +126,7 @@ defmodule SimpleMongoAppWeb.PageController do
     str = find_str_key Map.keys( params )
     result = if save, do: :save, else: nil
     result = if dele, do: :dele, else: result
-    result = if str, do: :str, else: result
+    result = if str, do: :search, else: result
     result
   end
 
@@ -144,8 +144,8 @@ defmodule SimpleMongoAppWeb.PageController do
         id = find_id( Map.keys( params ), params, @dele_button_reg )
         delete id
         debug "Found and deleted article #{id}"
-      :str ->
-        str = params[ "str" ]
+      :search ->
+        str = params[ "s" ]
         debug "Found parameter str - it's #{ str }"
       _ ->
         debug "Not found - this just means displaying the page, not hitting a button"
@@ -244,12 +244,12 @@ defmodule SimpleMongoAppWeb.PageController do
       analyze_params args
       str = find_str_key Map.keys( args )
       conn = if str do
-        str = args[ "str" ]
-        debug "find() - parameter str #{str}"
-        assign( conn, :str, str )
+        str = args[ "s" ]
+        debug "find() - parameter s #{str}"
+        assign( conn, :s, str )
       else
-        debug "find() - no parameter str"
-        assign( conn, :str, "" )
+        debug "find() - no parameter s"
+        assign( conn, :s, "" )
       end
       render conn, "find.html"
     end

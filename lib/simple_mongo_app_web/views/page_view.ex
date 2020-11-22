@@ -1,7 +1,6 @@
 defmodule SimpleMongoAppWeb.PageView do
   use SimpleMongoAppWeb, :view
   alias SimpleMongoApp.Utils
-
   #  @dele_button_field "<span><button class='btn btn-default btn-xs' id='dele_button_ID' name='dele_button_ID' type='submit' style='background-color: #ff99cc; width: 80px;'>Delete</button></span>\n"
   @dele_button_field """
   <a href='/' onclick=\"if (confirm('are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;
@@ -14,6 +13,10 @@ defmodule SimpleMongoAppWeb.PageView do
   @edit_button_field "<span><button class='btn btn-default btn-xs' id='edit_button_ID' name='edit_button_ID' onclick=\"window.location = '/edit/ID'; return false;\" style='padding: 2px; margin: 3px; background-color: #66ffcc; width: 80px;'>Edit</button></span>"
   @new_column_field "<label style='width: 29%; float: left' for='new_column'>new column?</label> <input style='width: 69%; float: left;' id='new_column' name='new_column' type='text' value=''><br/>\n "
   @new_column_reg ~r/<label.+new column.+input.+new_column.+/
+  @single_quotes_reg ~r/value='.+'/
+  @double_quotes_reg ~r/value=".+"/
+  @button_reg ~r/<button.+\/button>/
+  @style_reg ~r/style='.+?'/
   @debugging false
 
   defp debug( str ) do
@@ -121,7 +124,7 @@ defmodule SimpleMongoAppWeb.PageView do
 
   defp htmlify_classifications( list ) do
     case list do
-      [] -> "&nbsp;&nbsp;&nbsp;<a href='/?a=ALL'>ALL</a>"
+      [] -> "&nbsp;&nbsp;&nbsp;<a href='/'>ALL</a>"
       [ hd | tl ] -> # Note advanced CSS style
          "&nbsp;&nbsp;&nbsp;<a href='/?c=#{ hd }'>#{ hd }</a>" <> htmlify_classifications( tl )
     end
@@ -131,8 +134,8 @@ defmodule SimpleMongoAppWeb.PageView do
 # the inputs classification and name, plus any 'new columns', and the value field in hidden textarea 'page'
   defp get_values( html, reg ) do
     one_line = String.replace html, "\n", " "
-    one_line = String.replace one_line, ~r/<button.+\/button>/, ""
-    one_line = String.replace one_line, ~r/style='.+?'/, ""
+    one_line = String.replace one_line, @button_reg, ""
+    one_line = String.replace one_line, @style_reg, ""
     values = Regex.scan reg, one_line
     values = List.flatten values
     str = Enum.join values
@@ -148,8 +151,8 @@ defmodule SimpleMongoAppWeb.PageView do
       [] -> []
       [hd | tl] ->
         article = elem( hd, 1 ) # Sometimes it's value='value', sometimes it's value="value" (double quotes)
-        quotes =       get_values( article, ~r/value='.+'/ )
-        doublequotes = get_values( article, ~r/value=".+"/ )
+        quotes =       get_values( article, @single_quotes_reg )
+        doublequotes = get_values( article, @double_quotes_reg )
         bothquotes = quotes <> " " <> doublequotes
         if String.contains?( bothquotes, str ) do
           [ hd ] ++ select_articles( tl, str )
@@ -166,7 +169,8 @@ defmodule SimpleMongoAppWeb.PageView do
     (classifications() |> MapSet.to_list() |> htmlify_classifications()) <> "<br/>\n"
   end
 
-# %{"c" => "woman"}
+# Handle %{"c" => "woman"} as well as %{"s" => "something"}
+# Also, when they add a new column 'c', don't confuse this with clicking on one of the classifications
   def show_articles( str ) do
     try do
       select_articles articles(), str
