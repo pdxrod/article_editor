@@ -146,18 +146,31 @@ defmodule SimpleMongoAppWeb.PageView do
     str
   end
 
-  defp select_articles( articles, str ) do
+  defp select_articles( articles, s, c ) do
     case articles do
       [] -> []
       [hd | tl] ->
         article = elem( hd, 1 ) # Sometimes it's value='value', sometimes it's value="value" (double quotes)
-        quotes =       get_values( article, @single_quotes_reg )
-        doublequotes = get_values( article, @double_quotes_reg )
-        bothquotes = quotes <> " " <> doublequotes
-        if String.contains?( bothquotes, str ) do
-          [ hd ] ++ select_articles( tl, str )
-        else
-          select_articles tl, str
+        cond do
+          s ->
+            singlequotes = get_values( article, @single_quotes_reg )
+            doublequotes = get_values( article, @double_quotes_reg )
+            eitherquotes = singlequotes <> " " <> doublequotes
+            if String.contains?( eitherquotes, s ) do
+              [ hd ] ++ select_articles( tl, s, c )
+            else
+              select_articles tl, s, c
+            end
+          c ->     # <id="classification" name="classification" type="text" value="car">
+            single_quotes_class_reg = ~r/classification.+name.+value=.+'#{ c }'/
+            double_quotes_class_reg = ~r/classification.+name.+value=.+"#{ c }"/
+            if article =~ single_quotes_class_reg || article =~ double_quotes_class_reg do
+              [ hd ] ++ select_articles( tl, s, c )
+            else
+              select_articles tl, s, c
+            end
+          true ->
+            select_articles tl, s, c
         end
     end
   end
@@ -171,9 +184,9 @@ defmodule SimpleMongoAppWeb.PageView do
 
 # Handle %{"c" => "woman"} as well as %{"s" => "something"}
 # Also, when they add a new column 'c', don't confuse this with clicking on one of the classifications
-  def show_articles( str ) do
+  def show_articles( s, c ) do
     try do
-      select_articles articles(), str
+      select_articles articles(), s, c
     rescue
       re in RuntimeError -> re
       [ { "decaf0ff", "Error: #{ re.message }" } ]

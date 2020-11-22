@@ -124,9 +124,11 @@ defmodule SimpleMongoAppWeb.PageController do
     save = find_id( Map.keys( params ), params, @save_button_reg )
     dele = find_id( Map.keys( params ), params, @dele_button_reg )
     str = find_str_key Map.keys( params )
+    classification = Map.keys( params ) == ["c"]
     result = if save, do: :save, else: nil
     result = if dele, do: :dele, else: result
     result = if str, do: :search, else: result
+    result = if classification, do: :classification, else: result
     result
   end
 
@@ -146,7 +148,10 @@ defmodule SimpleMongoAppWeb.PageController do
         debug "Found and deleted article #{id}"
       :search ->
         str = params[ "s" ]
-        debug "Found parameter str - it's #{ str }"
+        debug "Found parameter s - it's #{ str }"
+      :classification ->
+        str = params[ "c" ]
+        debug "Found parameter c - it's #{ str }"
       _ ->
         debug "Not found - this just means displaying the page, not hitting a button"
     end
@@ -231,9 +236,13 @@ defmodule SimpleMongoAppWeb.PageController do
         debug "This article already exists"
         assign(conn, :error, "This article already exists")
       else
-        debug "Either creating a new article, or updating an old one"
-        analyze_params args
-        assign(conn, :error, nil)
+        if Map.keys( args ) == ["c"] do
+         assign(conn, :c, args[ "c" ])
+        else
+          debug "Either creating a new article, or updating an old one"
+          analyze_params args
+          assign(conn, :error, nil)
+        end
       end
       render conn, "index.html"
     end

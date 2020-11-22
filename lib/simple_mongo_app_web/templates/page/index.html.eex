@@ -27,7 +27,7 @@
   </span>
 
   <div id="_classifications" style='float: left;'>
-    Categories: <%= show_classifications() |> raw %>
+    <b>Categories</b> <%= show_classifications() |> raw %>
   </div>
 
   <div id="_results">
