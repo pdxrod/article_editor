@@ -121,7 +121,7 @@ defmodule SimpleMongoAppWeb.PageView do
 
   defp htmlify_classifications( list ) do
     case list do
-      [] -> ""
+      [] -> "&nbsp;&nbsp;&nbsp;<a href='/?a=ALL'>ALL</a>"
       [ hd | tl ] -> # Note advanced CSS style
          "&nbsp;&nbsp;&nbsp;<a href='/?c=#{ hd }'>#{ hd }</a>" <> htmlify_classifications( tl )
     end
