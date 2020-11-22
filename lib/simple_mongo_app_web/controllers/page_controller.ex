@@ -76,7 +76,7 @@ defmodule SimpleMongoAppWeb.PageController do
 
   defp find_button_key( keys ) do
     case keys do
-      [] -> @decaf00f
+      [] -> nil
       [hd | tl] ->
         if hd =~ @todo_button_reg do
           hd
@@ -215,7 +215,7 @@ defmodule SimpleMongoAppWeb.PageController do
 # private ^ public v
 
     def edit( conn, params ) do
-      debug "edit"
+      debug "edit()"
       args = trim_vals params
       id = analyse_params args
       conn = assign(conn, :id, id)
@@ -227,17 +227,13 @@ defmodule SimpleMongoAppWeb.PageController do
     def index(conn, params) do
       args = trim_vals params
       debug "index()"
-      conn = if args[ "c" ] do
-        conn
+      conn = if already_exists_with_this_name_and_classification?( args ) do
+        debug "This article already exists"
+        assign(conn, :error, "This article already exists")
       else
-        if already_exists_with_this_name_and_classification?( args ) do
-          debug "This article already exists"
-          assign(conn, :error, "This article already exists")
-        else
-          debug "Either creating a new article, or updating an old one"
-          analyze_params args
-          assign(conn, :error, nil)
-        end
+        debug "Either creating a new article, or updating an old one"
+        analyze_params args
+        assign(conn, :error, nil)
       end
       render conn, "index.html"
     end

@@ -103,8 +103,12 @@ defmodule SimpleMongoAppWeb.PageView do
     [ { id, label <> str <> save } ]
   end
 
-  defp articles do
-    cursor = Mongo.find(:article, "my_app_db", %{})
+  defp articles( classification \\ nil ) do
+    cursor = if nil == classification do
+      Mongo.find(:article, "my_app_db", %{})
+    else
+      Mongo.find(:article, "my_app_db", %{classification: classification})
+    end
     list = cursor |> Enum.to_list() |> stringify_list
     list ++ empty_row()
   end
