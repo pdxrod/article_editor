@@ -26,6 +26,10 @@
     <input onkeyup="keyUpSearch()" id='_search' name='_search' type='text' style="width: 500px;" value=''>
   </span>
 
+  <div id="_classifications" style='float: left;'>
+    Categories: <%= show_classifications() |> raw %>
+  </div>
+
   <div id="_results">
   </div>
 </div>

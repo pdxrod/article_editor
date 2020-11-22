@@ -113,16 +113,23 @@ defmodule SimpleMongoAppWeb.PageView do
     list ++ empty_row()
   end
 
-  def classifications do
+  defp classifications do
     list = Mongo.find(:article, "my_app_db", %{}) |> Enum.to_list()
-    values = Enum.flat_map( list, fn(article) -> [article["classification"]] end )
-    set = MapSet.new values
-    set
+    values = Enum.flat_map( list, fn(article) -> [ article[ "classification" ] ] end )
+    MapSet.new values
+  end
+
+  defp htmlify_classifications( list ) do
+    case list do
+      [] -> ""
+      [ hd | tl ] -> # Note advanced CSS style
+         "&nbsp;&nbsp;&nbsp;<a href='/?c=#{ hd }'>#{ hd }</a>" <> htmlify_classifications( tl )
+    end
   end
 
 # What I really want to do is get rid of all the HTML except the contents of the value fields in
 # the inputs classification and name, plus any 'new columns', and the value field in hidden textarea 'page'
-  def get_values( html, reg ) do
+  defp get_values( html, reg ) do
     one_line = String.replace html, "\n", " "
     one_line = String.replace one_line, ~r/<button.+\/button>/, ""
     one_line = String.replace one_line, ~r/style='.+?'/, ""
@@ -155,6 +162,11 @@ defmodule SimpleMongoAppWeb.PageView do
 # ------------------------------------------------------------------------------
 # private ^ public v
 
+  def show_classifications do
+    (classifications() |> MapSet.to_list() |> htmlify_classifications()) <> "<br/>\n"
+  end
+
+# %{"c" => "woman"}
   def show_articles( str ) do
     try do
       select_articles articles(), str
