@@ -7,7 +7,7 @@ defmodule SimpleMongoAppWeb.PageController do
   @text_button_reg ~r/text_button_.+/
   @todo_button_reg ~r/.{4}_button_.+/
   @textarea_reg ~r/textarea_.+/
-  @debugging false
+  @debugging true
 
   defp debug( str ) do
     if @debugging, do: IO.puts "\n#{str}"
@@ -232,18 +232,20 @@ defmodule SimpleMongoAppWeb.PageController do
     def index(conn, params) do
       args = trim_vals params
       debug "index()"
-      conn = if already_exists_with_this_name_and_classification?( args ) do
-        debug "This article already exists"
-        assign(conn, :error, "This article already exists")
-      else
+      conn =
         if Map.keys( args ) == ["c"] do
-         assign(conn, :c, args[ "c" ])
+          debug "c is set"
+          assign(conn, :c, args[ "c" ])
         else
-          debug "Either creating a new article, or updating an old one"
-          analyze_params args
-          assign(conn, :error, nil)
+          if already_exists_with_this_name_and_classification?( args ) do
+            debug "This article already exists"
+            assign(conn, :error, "This article already exists")
+          else
+            debug "Either creating a new article, or updating an old one"
+            analyze_params args
+            assign(conn, :error, nil)
+          end
         end
-      end
       render conn, "index.html"
     end
 
@@ -259,6 +261,11 @@ defmodule SimpleMongoAppWeb.PageController do
       else
         debug "find() - no parameter s"
         assign( conn, :s, "" )
+        if Map.keys( args ) == ["c"] do
+          assign(conn, :c, args[ "c" ])
+        else
+          assign( conn, :c, "" )
+        end
       end
       render conn, "find.html"
     end

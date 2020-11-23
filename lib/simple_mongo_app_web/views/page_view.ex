@@ -17,7 +17,7 @@ defmodule SimpleMongoAppWeb.PageView do
   @double_quotes_reg ~r/value=".+"/
   @button_reg ~r/<button.+\/button>/
   @style_reg ~r/style='.+?'/
-  @debugging false
+  @debugging true
 
   defp debug( str ) do
     if @debugging, do: IO.puts "\n#{str}"
@@ -152,7 +152,18 @@ defmodule SimpleMongoAppWeb.PageView do
       [hd | tl] ->
         article = elem( hd, 1 ) # Sometimes it's value='value', sometimes it's value="value" (double quotes)
         cond do
-          s ->
+          Utils.notmt? c ->     # <id="classification" name="classification" type="text" value="car">
+            debug "\nselect_articles: c is #{c}"
+            single_quotes_class_reg = ~r/classification.+name.+value='#{ c }'/
+            double_quotes_class_reg = ~r/classification.+name.+value="#{ c }"/
+            if article =~ single_quotes_class_reg || article =~ double_quotes_class_reg do
+              [ hd ] ++ select_articles( tl, s, c )
+            else
+              select_articles tl, s, c
+            end
+          true ->
+            s = if nil == s, do: "", else: s
+            debug "\nselect_articles: s is #{s}"
             singlequotes = get_values( article, @single_quotes_reg )
             doublequotes = get_values( article, @double_quotes_reg )
             eitherquotes = singlequotes <> " " <> doublequotes
@@ -161,16 +172,6 @@ defmodule SimpleMongoAppWeb.PageView do
             else
               select_articles tl, s, c
             end
-          c ->     # <id="classification" name="classification" type="text" value="car">
-            single_quotes_class_reg = ~r/classification.+name.+value=.+'#{ c }'/
-            double_quotes_class_reg = ~r/classification.+name.+value=.+"#{ c }"/
-            if article =~ single_quotes_class_reg || article =~ double_quotes_class_reg do
-              [ hd ] ++ select_articles( tl, s, c )
-            else
-              select_articles tl, s, c
-            end
-          true ->
-            select_articles tl, s, c
         end
     end
   end
