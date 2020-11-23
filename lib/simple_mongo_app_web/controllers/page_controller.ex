@@ -1,6 +1,7 @@
 defmodule SimpleMongoAppWeb.PageController do
   use SimpleMongoAppWeb, :controller
   alias BSON.ObjectId
+  alias SimpleMongoApp.Utils
 
   @save_button_reg ~r/save_button_.+/
   @dele_button_reg ~r/dele_button_.+/
@@ -113,18 +114,12 @@ defmodule SimpleMongoAppWeb.PageController do
     { id_list, obj_id }
   end
 
-  defp find_str_key( keys ) do
-    Enum.find( keys, fn( element ) ->
-      match?( "s", element )
-    end)
-  end
-
 # This is a bit redundant, but it's easier to read than a nest of elses
   defp params?( params ) do
     save = find_id( Map.keys( params ), params, @save_button_reg )
     dele = find_id( Map.keys( params ), params, @dele_button_reg )
-    str = find_str_key Map.keys( params )
-    classification = Map.keys( params ) == ["c"]
+    str = params["s"]
+    classification = params["c"]
     result = if save, do: :save, else: nil
     result = if dele, do: :dele, else: result
     result = if str, do: :search, else: result
@@ -249,19 +244,25 @@ defmodule SimpleMongoAppWeb.PageController do
       render conn, "index.html"
     end
 
+# %{"c" => "post", "s" => "_"}
     def find( conn, params ) do
       debug "find()"
       args = trim_vals params
       analyze_params args
-      str = find_str_key Map.keys( args )
-      conn = if str do
-        str = args[ "s" ]
-        debug "find() - parameter s #{str}"
-        assign( conn, :s, str )
+      s = args[ "s" ]
+# Using underscore is a hack because router thinks find//car is find/car, so it's find/_/car - see index.html Javascript
+      s = if "_" == s, do: "", else: s
+      c = args[ "c" ]
+      c = if "_" == c, do: "", else: c
+      conn = if Utils.notmt? s do
+        debug "find() - parameter s #{s}"
+        conn = assign( conn, :s, s )
+        assign( conn, :c, "" )
       else
         debug "find() - no parameter s"
-        assign( conn, :s, "" )
-        if Map.keys( args ) == ["c"] do
+        conn = assign( conn, :s, "" )
+        if Utils.notmt? c do
+          debug "find() - parameter c #{args["c"]}"
           assign(conn, :c, args[ "c" ])
         else
           assign( conn, :c, "" )

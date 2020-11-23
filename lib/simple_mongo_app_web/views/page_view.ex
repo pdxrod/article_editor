@@ -1,6 +1,7 @@
 defmodule SimpleMongoAppWeb.PageView do
   use SimpleMongoAppWeb, :view
   alias SimpleMongoApp.Utils
+
   #  @dele_button_field "<span><button class='btn btn-default btn-xs' id='dele_button_ID' name='dele_button_ID' type='submit' style='background-color: #ff99cc; width: 80px;'>Delete</button></span>\n"
   @dele_button_field """
   <a href='/' onclick=\"if (confirm('are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;
@@ -150,7 +151,7 @@ defmodule SimpleMongoAppWeb.PageView do
     case articles do
       [] -> []
       [hd | tl] ->
-        article = elem( hd, 1 ) # Sometimes it's value='value', sometimes it's value="value" (double quotes)
+        article = elem( hd, 1 )
         cond do
           Utils.notmt? c ->     # <id="classification" name="classification" type="text" value="car">
             debug "\nselect_articles: c is #{c}"
@@ -161,7 +162,7 @@ defmodule SimpleMongoAppWeb.PageView do
             else
               select_articles tl, s, c
             end
-          true ->
+          true ->               # Sometimes it's value='value', sometimes it's value="value" (double quotes)
             s = if nil == s, do: "", else: s
             debug "\nselect_articles: s is #{s}"
             singlequotes = get_values( article, @single_quotes_reg )

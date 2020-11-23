@@ -1,8 +1,10 @@
 <script type="text/javascript">
 
-  function getResults(val){
+  function getResults(s, c) { // s is the search string, c is a category the user clicked on
     var request = new XMLHttpRequest();
-    request.open('GET', '/find/' + val, true);
+    if( ! s ) s = '_';
+    if( ! c ) c = '_';
+    request.open('GET', '/find/' + s + '/' + c, true);
     request.send(null);
     request.onreadystatechange = function () {
       if (request.readyState === 4 && request.status === 200) {
@@ -13,12 +15,11 @@
 
   function keyUpSearch() {
     searchBox = document.getElementById( "_search" );
-    val = searchBox.value;
-    getResults(val);
+    s = searchBox.value;
+    getResults(s, "_");
   }
 
-  getResults('');
-
+  getResults('_', '<%= if assigns[:c], do: assigns[:c], else: "_" %>');
 </script>
 
 <div class="jumbotron">
