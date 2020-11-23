@@ -8,7 +8,7 @@ defmodule SimpleMongoAppWeb.PageController do
   @text_button_reg ~r/text_button_.+/
   @todo_button_reg ~r/.{4}_button_.+/
   @textarea_reg ~r/textarea_.+/
-  @debugging true
+  @debugging false
 
   defp debug( str ) do
     if @debugging, do: IO.puts "\n#{str}"
@@ -228,8 +228,8 @@ defmodule SimpleMongoAppWeb.PageController do
       args = trim_vals params
       debug "index()"
       conn =
-        if Map.keys( args ) == ["c"] do
-          debug "c is set"
+        if args[ "c" ] do
+          debug "c is set - it's #{args["c"]}"
           assign(conn, :c, args[ "c" ])
         else
           if already_exists_with_this_name_and_classification?( args ) do
@@ -262,8 +262,8 @@ defmodule SimpleMongoAppWeb.PageController do
         debug "find() - no parameter s"
         conn = assign( conn, :s, "" )
         if Utils.notmt? c do
-          debug "find() - parameter c #{args["c"]}"
-          assign(conn, :c, args[ "c" ])
+          debug "find() - parameter c #{c}"
+          assign(conn, :c, c)
         else
           assign( conn, :c, "" )
         end

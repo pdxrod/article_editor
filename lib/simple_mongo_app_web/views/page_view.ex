@@ -18,7 +18,7 @@ defmodule SimpleMongoAppWeb.PageView do
   @double_quotes_reg ~r/value=".+"/
   @button_reg ~r/<button.+\/button>/
   @style_reg ~r/style='.+?'/
-  @debugging true
+  @debugging false
 
   defp debug( str ) do
     if @debugging, do: IO.puts "\n#{str}"
