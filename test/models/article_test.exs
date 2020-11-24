@@ -24,7 +24,8 @@ defmodule ArticleTest do
   Sara's website in a new tab: <a target='_blank' href='http://sarabloggs.biz'>sara bloggs</a>
   <p>tarquinbloggs.net</p>
   HTTP://CAPITAL-LETTERS.COM
-
+  a sentence.
+  <p>another sentence.</p>
   <p>some html text</p>
   <p>some more</p>
   </body>
@@ -80,6 +81,11 @@ defmodule ArticleTest do
 
     test "auto-urling page" do
       urled = Utils.auto_url! @page
+
+IO.puts "\nurled:\n#{urled}"
+
+      assert ! String.contains? urled, "href='http://sentence.'>sentence."
+      assert ! String.contains? urled, "href=\"http://sentence.\">sentence."
       assert String.contains? urled, "<p>some html text</p>"
       assert String.contains? urled, "<a target='_blank' href='HTTP://CAPITAL-LETTERS.COM'>HTTP://CAPITAL-LETTERS.COM</a>"
       assert String.contains? urled, "<a target='_blank' href='http://tarquinbloggs.net'>tarquinbloggs.net</a>"

@@ -274,7 +274,7 @@ defmodule SimpleMongoAppWeb.PageController do
         conn = assign( conn, :s, "" )
         if Utils.notmt? c do
           debug "find() - parameter c #{c}"
-          assign(conn, :c, c)
+          assign( conn, :c, c )
         else
           assign( conn, :c, "" )
         end

@@ -35,10 +35,10 @@ defmodule SimpleMongoApp.Utils do
   end
 
   @proto_regex     ~r/(https|http|ftp):\/\//i
-  @http_regex      ~r/^(https|http|ftp):\/\/[^\s]+\.[^\s]+$/i # to match string only containing a full url
-  @http_line_regex ~r/(https|http|ftp):\/\/[^\s]+\.[^\s]+/i   # to match a line containing a full url
-  @url_regex       ~r/^[^\s]+\.[^\s]+$/                       # to match string only containing a url
-  @url_line_regex  ~r/[^\s]+\.[^\s]+/                         # to match a line containing a url
+  @http_regex      ~r/^(https|http|ftp):\/\/[^\s]+\.[A-Za-z]+$/i # to match string only containing a full url
+  @http_line_regex ~r/(https|http|ftp):\/\/[^\s]+\.[A-Za-z]+/i   # to match a line containing a full url
+  @url_regex       ~r/^[^\s]+\.[A-Za-z]+$/                       # to match string only containing a url
+  @url_line_regex  ~r/[^\s]+\.[A-Za-z]+/                         # to match a line containing a url
   @tag_regex       ~r/(<\/?[A-Z][A-Z0-9]*>)/i
   @space_regex     ~r/\s+/
 
