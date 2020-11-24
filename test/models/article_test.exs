@@ -81,9 +81,6 @@ defmodule ArticleTest do
 
     test "auto-urling page" do
       urled = Utils.auto_url! @page
-
-IO.puts "\nurled:\n#{urled}"
-
       assert ! String.contains? urled, "href='http://sentence.'>sentence."
       assert ! String.contains? urled, "href=\"http://sentence.\">sentence."
       assert String.contains? urled, "<p>some html text</p>"
