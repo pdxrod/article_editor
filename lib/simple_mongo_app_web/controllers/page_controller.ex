@@ -47,6 +47,12 @@ defmodule SimpleMongoAppWeb.PageController do
     end
   end
 
+  defp either_name_or_classification_are_empty?( args ) do
+    classification = args["classification"]
+    name = args["name"]
+    Utils.mt?( classification ) || Utils.mt?( name )
+  end
+
   defp replace( id, params ) do # Also creates a new article from the empty form
     old_article = %{_id: id}
     new_column = find_new_column params
@@ -232,13 +238,18 @@ defmodule SimpleMongoAppWeb.PageController do
           debug "c is set - it's #{args["c"]}"
           assign(conn, :c, args[ "c" ])
         else
-          if already_exists_with_this_name_and_classification?( args ) do
-            debug "This article already exists"
-            assign(conn, :error, "This article already exists")
+          if either_name_or_classification_are_empty?( args ) do
+            debug "Name and classification must have values"
+            assign(conn, :error, "Name and classification must have values")
           else
-            debug "Either creating a new article, or updating an old one"
-            analyze_params args
-            assign(conn, :error, nil)
+            if already_exists_with_this_name_and_classification?( args ) do
+              debug "This article already exists"
+              assign(conn, :error, "This article already exists")
+            else
+              debug "Either creating a new article, or updating an old one"
+              analyze_params args
+              assign(conn, :error, nil)
+            end
           end
         end
       render conn, "index.html"

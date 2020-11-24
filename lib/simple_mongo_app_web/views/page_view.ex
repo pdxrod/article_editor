@@ -2,7 +2,6 @@ defmodule SimpleMongoAppWeb.PageView do
   use SimpleMongoAppWeb, :view
   alias SimpleMongoApp.Utils
 
-  #  @dele_button_field "<span><button class='btn btn-default btn-xs' id='dele_button_ID' name='dele_button_ID' type='submit' style='background-color: #ff99cc; width: 80px;'>Delete</button></span>\n"
   @dele_button_field """
   <a href='/' onclick=\"if (confirm('are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href;
   var m = document.createElement('input'); m.setAttribute('type', 'hidden'); m.setAttribute('name', 'dele_button_ID'); m.setAttribute('value', 'delete'); m.setAttribute('id', 'dele_button_ID'); f.appendChild(m);

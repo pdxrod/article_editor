@@ -9,6 +9,8 @@
     request.onreadystatechange = function () {
       if (request.readyState === 4 && request.status === 200) {
         document.getElementById( "_results" ).innerHTML = request.responseText;
+      } else {
+        document.getElementById( "_results" ).innerHTML = "Problem communication with App";
       }
     }
   }
