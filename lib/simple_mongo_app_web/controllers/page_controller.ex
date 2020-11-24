@@ -47,10 +47,13 @@ defmodule SimpleMongoAppWeb.PageController do
     end
   end
 
-  defp either_name_or_classification_are_empty?( args ) do
-    classification = args["classification"]
-    name = args["name"]
-    Utils.mt?( classification ) || Utils.mt?( name )
+  defp trying_to_save_with_no_name_or_classification?( args ) do
+    save = find_id( Map.keys( args ), args, @save_button_reg )
+    case save do
+      nil -> false
+      _ ->
+        (! Utils.mt? args) && (Utils.mt?( args["classification"] ) || Utils.mt?( args["name"] ))
+      end
   end
 
   defp replace( id, params ) do # Also creates a new article from the empty form
@@ -238,7 +241,7 @@ defmodule SimpleMongoAppWeb.PageController do
           debug "c is set - it's #{args["c"]}"
           assign(conn, :c, args[ "c" ])
         else
-          if either_name_or_classification_are_empty?( args ) do
+          if trying_to_save_with_no_name_or_classification?( args ) do
             debug "Name and classification must have values"
             assign(conn, :error, "Name and classification must have values")
           else
@@ -246,7 +249,7 @@ defmodule SimpleMongoAppWeb.PageController do
               debug "This article already exists"
               assign(conn, :error, "This article already exists")
             else
-              debug "Either creating a new article, or updating an old one"
+              debug "Creating a new article, or updating an old one, or just looking at the index page"
               analyze_params args
               assign(conn, :error, nil)
             end
