@@ -1,0 +1,188 @@
+<link rel="stylesheet" href="/css/master.css">
+<script src="/js/jquery.js" type="text/javascript"></script>
+
+<% id = assigns[ :id ]
+   article = show_article( id )
+   top =      elem( article, 0 )
+   contents = elem( article, 1 )
+   csrf_token = Phoenix.Controller.get_csrf_token() %>
+
+<div class="contents">
+
+  <span style='display: none; font-size: 1; color: #000000; background-color: #00ffff; padding: 1px; border-width: 1px; border: 1px solid;' id="_message"></span>
+
+  <div class="two-panels">
+
+    <table>
+    <tbody>
+    <tr>
+      <td style="vertical-align: top;">
+        <form id="form_<%= id %>" method="post" name="form_<%= id %>">
+
+          <input id="_csrf_token" name="_csrf_token" type="hidden" value="<%= csrf_token %>">
+
+            <%= top |> raw() %>
+
+            <script type="text/javascript">
+                function reg_check() {
+                  window.location = "/write";
+                  return false;
+                } // Thx https://stackoverflow.com/questions/27725127/redirect-using-window-location-doesnt-work
+            </script>
+
+            <%
+              text_size = String.length( contents )
+              col = 80
+              row = text_size / col
+              row = if row > 25, do: 25, else: row
+              row = if row < 10, do: 10, else: row
+            %>
+            <%= if text_size > 2048 do %>
+                        <span><button class="btn btn-default btn-s" id="back_button_<%= id %>" name="back_button_<%= id %>" onclick="reg_check(); return false;" style='background-color: #99ffcc; width: 80px;'>&larr; Back</button></span>
+                        <span><button class="btn btn-default btn-s" id="text_button_<%= id %>" name="text_button_<%= id %>" type="submit" action="/write" style='background-color: #00ffff; width: 80px;'>Save</button></span><br/><br/>
+            <% end %>
+
+            <textarea name="textarea_<%= id %>" id="textarea_<%= id %>" rows="<%= row %>" cols="60">
+               <%= contents |> raw() %>
+            </textarea>
+            <br/>
+            <script type="text/javascript">
+
+              const DEBUGGING = false;
+
+              function deBugger( msg ) {
+                if( DEBUGGING ) console.log( msg );
+              }
+
+              function switch_message_style( display ) {
+                document.getElementById( "_message" ).style = "'display: " + display + "; font-size: 1; color: #000000; background-color: #00ffff; padding: 1px; border-width: 1px; border: 1px solid;'"
+              }
+
+              function show_message( msg ) {
+                switch_message_style( "block" );
+                document.getElementById( "_message" ).innerHTML = msg;
+              }
+
+              function switch_buttons_abled( boolval, buttons ) {
+                deBugger( "switch_buttons_abled "+boolval );
+                for( let i = 0; i < buttons.length; i ++ ) buttons[ i ].disabled = ! boolval;
+              }
+
+              var entity_map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&apos;',
+                '/': '&sol;',
+                '`': '`',
+                '=': '&equals;',
+                '!': '&excl;',
+                '@': '&commat;',
+                '$': '&dollar;',
+                '%': '&percnt;',
+                '(': '&lpar;',
+                ')': '&rpar;',
+                '+': '&plus;',
+                '{': '&lcub;',
+                '}': '&rcub;',
+                '[': '&lsqb;',
+                ']': '&rsqb;',
+                ' ': '&nbsp;'
+              };
+
+              function escape_html(string) {
+                return String(string).replace(/\&.+;/g, function (s) {
+                  return entity_map[ s ];
+                });
+              }
+
+              var map_entity = {};
+              for( key in entity_map ) {
+                map_entity[ entity_map[ key ] ] = key;
+              }
+
+              function raw_html( string ) {
+                var result = string;
+                for( key in map_entity ) {
+                  result = result.replaceAll( key, map_entity[ key ] );
+                }
+                return result;
+              }
+
+              function hash_code( s ) {
+                return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+              }
+
+              var old_hash = null;
+              var timing = <%= assigns[:timing] %>;
+              setInterval( save_loop, timing * 60 * 1000 );
+
+              function save_loop(  ) {
+                let page = document.getElementById( "_page" ).innerHTML;
+                let hash = hash_code( page );
+                if( hash != old_hash ) {
+                  old_hash = hash;
+                  document.getElementById( 'text_button_<%= id %>' ).click();
+                }
+              }
+
+              function chunk( chunk_size, text ) {
+                if( chunk_size >= text.length ) {
+                  return [ text ];
+                } else {
+                  let slice_start = 0;
+                  let slice_end = (slice_start + chunk_size);
+                  let next_slice_start = slice_end;
+                  let end_of_text = text.length + 1;
+                  let next_text = text.substring( next_slice_start, end_of_text );
+                  let this_text = text.substring( slice_start, slice_end );
+                  let this_list = [ this_text ];
+                  let next_list = chunk( chunk_size, next_text );
+                  let new_list = this_list.concat( next_list );
+                  return new_list;
+                }
+              }
+
+              tinyMCE.init( {
+                content_css: "/css/master.css",
+                mode : "textareas",
+                theme : "advanced",
+                relative_url : false,
+                plugins: "table",
+                tools: "inserttable",
+                setup: function(editor) {
+                  list = [
+                    {scope: editor, cb: function key_up( e ) {
+                      let reference = e.contentDocument.activeElement.innerHTML;
+                      let page = `${ reference }`;
+                      if( ! page ) page = "";
+                      document.getElementById( "_page" ).innerHTML = page;
+                    }}
+                  ];
+                  editor.onKeyUp.listeners = list;
+                },
+                theme_advanced_buttons1: "tablecontrols, bold, italic, removeformat, separator, charmap, separator, code",
+                theme_advanced_buttons2: "justifyleft, justifycenter, justifyright, justifyfull, formatselect, undo, redo, separator, link, unlink, separator, bullist, separator, outdent, indent, separator, hr, separator, cleanup",
+                theme_advanced_buttons3: "",
+                onchange_callback : function() { tinyMCE.triggerSave(); changed = true; }
+              } );
+
+            </script>
+            <span><button class="btn btn-default btn-s" id="back_button_<%= id %>" name="back_button_<%= id %>" onclick="reg_check(); return false;" style='background-color: #99ffcc; width: 80px;'>&larr; Back</button></span>
+            <span><button class="btn btn-default btn-s" id="text_button_<%= id %>" name="text_button_<%= id %>" type="submit" action="/write" style='background-color: #00ffff; width: 80px;'>Save</button></span>
+
+        </form>
+      </td>
+      <td>&nbsp;&nbsp;</td>
+      <td>
+        <br/><br/><br/>
+        <div id="_page" name="_page"><%= display_page( contents ) |> raw() %></div>
+      </td>
+
+    </tr>
+    </tbody>
+    </table>
+
+  </div>
+</div>

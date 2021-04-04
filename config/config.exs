@@ -18,6 +18,20 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-# Import environment specific config. This must remain at the bottom
-# of this file so it overrides the configuration defined above.
+config :simple_mongo_app, timings: {27, 17, 3700}
+
+config :simple_mongo_app, debugging: true
+
+config :simple_mongo_app, your_config: [
+  username: "foo",
+  password: "baz",
+  realm: "Admin Area"
+]
+
+config :simple_mongo_app, my_config: [
+  username: "foo",
+  password: "bar",
+  realm: "Admin Area"
+]
+
 import_config "#{Mix.env}.exs"

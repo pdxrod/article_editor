@@ -1,0 +1,55 @@
+<script type="text/javascript">
+
+  function getResults(s, c) { // s is the search string, c is a category the user clicked on
+    var request = new XMLHttpRequest();
+    if( ! s ) s = '_';
+    if( ! c ) c = '_';
+    request.open('GET', '/read/find/' + s + '/' + c, true);
+    request.send(null);
+    request.onreadystatechange = function () {
+      if (request.status === 200) {
+        document.getElementById( "_results" ).innerHTML = request.responseText;
+      } else {
+        document.getElementById( "_error" ).innerHTML = "Problem: status "+request.status;
+      }
+    }
+  }
+
+  const sleep = (milliseconds) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+
+  function keyUpSearch() {
+    sleep( 1300 ).then( () => {
+      searchBox = document.getElementById( "_search" );
+      s = searchBox.value;
+      if( ! s ) s = "";
+      if( "_" === s ) s = "";
+      s = s.trim();
+      if( s.length < 1 || s.length > 2 ) getResults(s, "_");
+    } )
+  }
+
+  getResults('_', '<%= if assigns[:c], do: assigns[:c], else: "_" %>');
+</script>
+
+<span id="_error" style='color: #000000; background-color: #cccccc;'></span>
+
+<div class="jumbotron">
+  <h3>article editor</h3>
+
+  <div align="left" class="text-small">
+
+  </div>
+
+  <span><label for='_search'>Search</label>
+    <input onkeyup="keyUpSearch()" id='_search' name='_search' type='text' style="width: 500px;" value=''>
+  </span>
+
+  <div id="_classifications">
+    <%= show_classifications() |> raw() %>
+  </div>
+
+  <div id="_results">
+  </div>
+</div>

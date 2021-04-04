@@ -6,5 +6,7 @@ config :simple_mongo_app, SimpleMongoAppWeb.Endpoint,
   http: [port: 4001],
   server: false
 
+config :simple_mongo_app, timings: {1, 2, 300}
+
 # Print only warnings and errors during test
 config :logger, level: :warn

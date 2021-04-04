@@ -41,6 +41,8 @@ config :simple_mongo_app, SimpleMongoAppWeb.Endpoint,
     ]
   ]
 
+config :simple_mongo_app, timings: {27, 11, 1700}
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 

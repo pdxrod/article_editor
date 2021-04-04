@@ -1,0 +1,61 @@
+<link rel="stylesheet" href="/css/master.css">
+
+<% id = assigns[ :id ]
+   article = show_article( id )
+   top =      elem( article, 0 )
+   contents = elem( article, 1 )
+   sidebar = elem( article, 2 ) %>
+
+<%= if String.length( sidebar ) > 0 do %>
+  <div name="_sidebar" id="_sidebar" class="w3-sidebar w3-bar-block w3-card w3-animate-left" style="display:none">
+    <button class="w3-bar-item w3-button w3-hide-large" onclick="w3_close()"> &times; </button>
+    <%= sidebar |> raw() %>
+  </div>
+  <button id="_opennav" name="_opennav" class="w3-button w3-teal w3-xlarge" onclick="w3_open()">&#9776;</button>
+<% end %>
+
+<div id="main">
+  <div class="w3-container">
+    <div class="contents">
+      <table>
+      <tbody>
+      <tr>
+        <td>
+
+          <%= top |> raw() %>
+
+           <script type="text/javascript">
+             // Thx https://www.w3schools.com/w3css/w3css_sidebar.asp
+             function w3_open() {
+               document.getElementById("main").style.marginLeft = "25%";
+               document.getElementById("_sidebar").style.width = "25%";
+               document.getElementById("_sidebar").style.display = "block";
+               document.getElementById("_opennav").style.display = 'none';
+             }
+
+             function w3_close() {
+               document.getElementById("main").style.marginLeft = "0%";
+               document.getElementById("_sidebar").style.display = "none";
+               document.getElementById("_opennav").style.display = "inline-block";
+             }
+
+             function reg_check() {
+               window.location = "/";
+               return false;
+             } // Thx https://stackoverflow.com/questions/27725127/redirect-using-window-location-doesnt-work
+           </script>
+
+           <br/>
+           <br/>
+
+           <%= display_page( contents ) |> raw() %>
+           <span><button class="btn btn-default btn-s" id="back_button_<%= id %>" name="back_button_<%= id %>" onclick="reg_check(); return false;" style='background-color: #99ffcc; width: 80px;'>&larr; Back</button></span>
+
+        </td>
+      </tr>
+      </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>

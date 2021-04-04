@@ -1,0 +1,53 @@
+defmodule SimpleMongoAppWeb.ReadController do
+  use SimpleMongoAppWeb, :controller
+  alias SimpleMongoApp.Utils
+  alias SimpleMongoApp.HtmlUtils
+  alias SimpleMongoApp.MemoryDb
+
+  defp analyse_params( params ) do
+    id = params[ "id" ]
+    if id == nil do
+      Utils.debug "Just displaying the edit page, not hitting the button"
+    else
+      Utils.debug "Just displaying the editor, not hitting any buttons"
+    end
+    id
+  end
+
+# ------------------------------------------------------------------------------
+# private ^ public v
+
+    def edit( conn, params ) do
+      Utils.debug "edit()"
+      args = HtmlUtils.trim_vals params
+      id = analyse_params args
+      if MemoryDb.valid_id? id do
+        conn = assign(conn, :id, id)
+        conn = render conn, "edit.html"
+        Utils.debug "edit params id #{ id }"
+        conn
+      else
+        assign(conn, :error, "Invalid value '#{ id }'")
+        conn |> Phoenix.Controller.redirect(to: "/")
+      end
+    end
+
+    def index(conn, params) do
+      args = HtmlUtils.trim_vals params
+      Utils.debug "index()"
+      conn =
+        if args[ "c" ] do
+          Utils.debug "c is set - it's #{args["c"]}"
+          assign(conn, :c, args[ "c" ])
+        else
+          Utils.debug "Just looking at the index page"
+          conn
+        end
+      render conn, "index.html"
+    end
+
+    def find( conn, params ) do
+      HtmlUtils.find conn, params
+    end
+
+end

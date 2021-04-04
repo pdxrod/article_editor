@@ -3,30 +3,35 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Articles Editor</title>
+    <title><%= assigns[:title] || "simple article editor" %></title>
 
+    <link rel="stylesheet" href="/css/bootstrap.css">
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
-    <script src="/js/prototype.js" type="text/javascript"></script>
-    <script src="/js/effects.js" type="text/javascript"></script>
-    <script src="/js/controls.js" type="text/javascript"></script>
-    <script src="/js/scriptaculous.js" type="text/javascript"></script>
     <script src="/js/inplacericheditor/lib/tiny_mce/tiny_mce.js" type="text/javascript"></script>
 
   </head>
-  <body>
-    <div class="container">
+  <body style='background-color: #ffffff'>
 
-      <p class="alert alert-info" role="alert"><%= assigns[ :error ] %></p>
+    <div class="container-fluid" style='background-color: #ffffff'>
+      <div class="row" style='background-color: #ffffff'>
+        <div class="col-xs-12" style='background-color: #ffffff'>
 
-      <main role="main">
-        <%= render @view_module, @view_template, assigns %>
-      </main>
+          <%= if assigns[:error] do %>
+            <span style='font-size: 1; color: #000000; background-color: #00ffff; padding: 1px; border-width: 1px; border: 1px solid;'><%= assigns[ :error ] %></span>
+          <% end %>
 
+          <main role="main" style='background-color: #ffffff'>
+             <%= render @view_module, @view_template, assigns %>
+          </main>
+
+        </div>
+      </div>
     </div>
+
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

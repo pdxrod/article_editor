@@ -35,7 +35,9 @@ defmodule SimpleMongoApp.Mixfile do
       {:cowboy, "~> 1.0"},
       {:plug_cowboy, "~> 1.0"},
       {:mongodb, "~> 0.5.1"},
-      {:random_bytes, "~> 1.0"}
+      {:random_bytes, "~> 1.0"},
+      {:basic_auth, "~> 2.2.2"},
+      {:basefiftyeight, "~> 0.1.0"}
     ]
   end
 

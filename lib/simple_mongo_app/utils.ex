@@ -1,13 +1,45 @@
 defmodule SimpleMongoApp.Utils do
-
-  def endings do
-    ["com", "org", "info", "edu", "uk", "au", "tv", "gov", "es", "za", "media", "me", "my", "ru", "ch", "cloud", "tr", "online",
-     "international", "vn", "xxx", "co", "coop", "mil", "biz", "nz", "us", "net", "il", "it", "ps", "pn", "de", "fr", "th"]
-  end
+  alias SimpleMongoApp.Base58
+  @hex_24_chars_regex ~r/^([a-f0-9]{24})$/
+  # One 24-nibble hex id string can be converted into a base 58 string
+  @base_58_6_chars_regex ~r/^([1-9a-km-zA-HJ-NP-Z]{6})$/
+  # The angel said no l, and they didn't have 0 then
+  @base_58_5_chars_regex ~r/^([1-9a-km-zA-HJ-NP-Z]{5})$/
+  @base_64_5_chars_regex ~r/^([1-9a-zA-Z=]{5})$/
+  @base_64_6_chars_regex ~r/^([1-9a-zA-Z=]{6})$/
 
   @types ~w[function nil integer binary bitstring list map float atom tuple pid port reference]
   for type <- @types do
     def typeof(x) when unquote(:"is_#{type}")(x), do: unquote(type)
+  end
+
+  def what?( who ) do
+    which = typeof who
+    str = case which do
+          "tuple" ->
+            "size #{tuple_size who} elem 0 #{typeof elem(who, 0)} elem #{tuple_size( who ) - 1} #{typeof elem( who, tuple_size(who) - 1 )} "
+          "map" ->
+            "size #{ length Map.keys(who) } first #{List.first Map.keys(who)} last #{List.last Map.keys(who)} "
+          "atom" -> ":#{ who }"
+          "integer" -> "#{ who }"
+          "datetime" -> "'#{ who }'"
+          "binary" -> "'#{ sample who }'"
+          "list" -> "list #{ what?( List.first who ) }"
+          _ -> ""
+        end
+    "type #{which} " <> str
+  end
+
+  def sample( str ) do
+    str = if mt?( str ), do: "                          nothing   to   see   here   ", else: str
+    len = String.length str
+    if len < 40 do
+      str
+    else
+      avg = trunc( len / 3 ) - 1
+      fin = trunc( avg + 17 )
+      String.slice( str, avg..fin )
+    end
   end
 
   def recurse( fail, succeed, collection, condition ) do
@@ -21,6 +53,16 @@ defmodule SimpleMongoApp.Utils do
     end
   end
 
+  def timings do
+    config = Application.get_env( :simple_mongo_app, :timings )
+    config
+  end
+
+  def str do
+    config = Application.get_env( :simple_mongo_app, :my_config )
+    "name #{config[:username]} password #{config[:password]}"
+  end
+
   def mt?( thing ) do
     thing == nil || thing == "" || thing == '' || thing == %{} || thing == [] || thing == {}
   end
@@ -29,80 +71,106 @@ defmodule SimpleMongoApp.Utils do
     ! mt?( thing )
   end
 
-  def contains_href?( text ) do
-    down = String.downcase text
-    String.contains?( down, "href=" ) || String.contains?( down, "href =" )
+  def hex_24_chars_regex do
+    @hex_24_chars_regex
   end
 
-  @proto_regex     ~r/(https|http|ftp):\/\//i
-  @http_regex      ~r/^(https|http|ftp):\/\/[^\s]+\.[A-Za-z]+$/i # to match string only containing a full url
-  @http_line_regex ~r/(https|http|ftp):\/\/[^\s]+\.[A-Za-z]+/i   # to match a line containing a full url
-  @url_regex       ~r/^[^\s]+\.[A-Za-z]+$/                       # to match string only containing a url
-  @url_line_regex  ~r/[^\s]+\.[A-Za-z]+/                         # to match a line containing a url
-  @tag_regex       ~r/(<\/?[A-Z][A-Z0-9]*>)/i
-  @space_regex     ~r/\s+/
+  def base_58_6_chars_regex do
+    @base_58_6_chars_regex
+  end
 
-  def linkables?( text ) do
-    if contains_href? text do
-      []
-    else
-          ## Regex.scan ~r/[^\s]+\.[^\s]+/, " hello foo.com bye bar.co.uk " -> [["foo.com"], ["bar.co.uk"]]
-      list = Regex.scan @url_line_regex, text
-      List.flatten list
+  def base_58_5_chars_regex do
+    @base_58_5_chars_regex
+  end
+
+  def base_64_5_chars_regex do
+    @base_64_5_chars_regex
+  end
+
+  def base_64_6_chars_regex do
+    @base_64_6_chars_regex
+  end
+
+  def begin_function( fun, id \\ "127.0.0.1" ) do
+    now = System.os_time(:millisecond)
+    if nil != id && id =~ hex_24_chars_regex() do
+      debug "#{fun} started #{now}", 2
+    end
+    now
+  end
+
+  def end_function( fun, then, id \\ "127.0.0.1" ) do
+    if nil != id && id =~ hex_24_chars_regex() do
+      now = System.os_time(:millisecond)
+      milli = now - then
+      debug "#{fun} took #{milli} milliseconds", 2
     end
   end
 
-  def strip_tags( text ) do
-    Regex.replace @tag_regex, text, ""
+  def debugging() do
+    Application.get_env( :simple_mongo_app, :debugging )
   end
 
-  def strip_extraneous_quotes_and_tags( text ) do
-    stripped = if String.starts_with?( text, ["\"", "'"] ) do
-                 String.slice( text, 1..-1 )
-               else
-                 text
-               end
-    stripped = if String.ends_with?( stripped, ["\"", "'"] ) do
-                 String.slice( stripped, 0..-2 )
-               else
-                 stripped
-               end
-    strip_tags stripped
-  end
-
-  def replace_linkables( line, linkables ) do
-    map = Enum.map( linkables, fn(link) -> link = strip_extraneous_quotes_and_tags( link )
-                                           if link =~ @proto_regex do
-                                             String.replace line, link, "<a target='_blank' href='#{ link }'>#{ link }</a>"
-                                           else
-                                             String.replace line, link, "<a target='_blank' href='http://#{ link }'>#{ link }</a>"
-                                           end
-                                           end )
-    Enum.join map, ""
-  end
-
-  def apply_regexes( line ) do
-    linkables = linkables? line
-    replaced = cond do
-      0 == length( linkables ) ->
-        line
-      true ->
-        replace_linkables line, linkables
+  def debug( str, mode \\ 1 ) do
+    if debugging() && mode > 2 do
+      IO.puts "#{str}"
+      { :ok, file } = File.cwd()
+      file = file <> "/article_editor.log"
+      tuple = File.read file # If it isn't there, it says {:error, :enoent}
+      contents = if :enoent == elem( tuple, 1 ), do: "", else: elem( tuple, 1 )
+      contents = if nil == contents, do: "", else: contents
+      contents = contents <> str <> "\n"
+      File.write file, contents
+      contents
     end
-    replaced
   end
 
-  def apply_regex( line, function ) do
-    function.( line )
+  def debug_ids( keys, map ) do
+    case keys do
+      [] -> ""
+      [hd | tl] ->
+        debug "debug_ids/2: map is #{ typeof map } and hd is #{ hd } [#{ typeof hd }] ", 1
+        val = if "datetime" == hd do
+                "datetime"
+              else
+                if "binary" == typeof( hd ), do: map[hd], else: "datetime"
+              end
+        "#{hd} -> #{ debug_ids val } "  <> debug_ids( tl, map )
+    end
   end
 
-  def auto_url!( html ) do
-    if nil == html do
-      ""
+  def debug_ids( obj ) do
+    case typeof( obj ) do
+      "nil" -> "nil"
+      "atom" -> ":#{ obj }"
+      "integer" -> "#{ obj }"
+      "datetime" -> "#{ obj }"
+      "binary" -> "'#{ sample obj }'"
+      "tuple" -> "tuple 0 #{elem obj, 0} "
+      "map" ->
+        debug_ids( Map.keys( obj ), obj )
+      "list" ->
+        case obj do
+          [] -> ""
+          [hd | tl] ->
+            debug_ids( hd ) <> debug_ids( tl )
+        end
+      _ -> "UNKNOWN TYPE #{typeof obj} "
+    end
+  end
+
+  def chunk( chunk_size, text, last_chunk \\ 1 ) do
+    debug "chunk #{chunk_size} #{String.length text} #{last_chunk}", 2
+    if chunk_size >= String.length text do
+      [ text ]
     else
-      lines = String.split html, "\n"
-      list = Enum.map(lines, fn(line) -> apply_regex( line, &apply_regexes/1 ) end)
-      Enum.join list, "\n"
+      slice_start = 0
+      slice_end = (slice_start + chunk_size) - 1
+      next_slice_start = slice_end + 1
+      end_of_text = String.length( text )
+      debug "chunk slice indeces #{slice_start}..#{slice_end} #{next_slice_start} #{end_of_text}", 2
+      next_text = String.slice text, next_slice_start..end_of_text
+      [ String.slice( text, slice_start..slice_end ) ] ++ chunk( chunk_size, next_text, last_chunk + 1 )
     end
   end
 
