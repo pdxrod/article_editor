@@ -86,9 +86,9 @@ Mongo.start_link(
 )
 ```
 
-` Mongo.insert_one(:article, "my_app_db", %{name: "John", classification: "man", _id: "5f9d79c5a9f74f0bfb2cf0ff" }) `
+` Mongo.insert_one(:article, "my_app_db", %{name: "John", classification: "man", _id: "decaf3c2b807174b1b6df0ff", short_id: "onYUN" }) `
 
-` Mongo.insert_one(:article, "my_app_db", %{name: "Ferrari", classification: "car", color: "red", _id: "cafe79c5a9f74f0bfb2cb5cc" }) `
+` Mongo.insert_one(:article, "my_app_db", %{name: "Ferrari", classification: "car", color: "red", _id: "18b93c9462cb978dbd5c0e78", short_id: "cU3Gy" }) `
 
 ` Mongo.find(:article, "my_app_db", %{}) |> Enum.to_list `
 
