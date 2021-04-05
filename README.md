@@ -1,7 +1,9 @@
 # article editor
 
+Created on a Mac M1 with Elixir 1.11.4 (compiled with Erlang/OTP 23), Phoenix 1.3.0, and MongoDB 4.4.4
 
-Before starting Phoenix you need to get 'Node' (`brew install node` on a Mac - you need Homebrew if you don't already have it)
+
+Before starting Phoenix you need to get Elixir, Mongo and Node (`brew install node` on a Mac - you need Homebrew if you don't already have it - https://brew.sh/)
 
   * Install Node.js dependencies with `cd assets` then
   * `npm install`
@@ -10,7 +12,9 @@ Before starting Phoenix you need to get 'Node' (`brew install node` on a Mac - y
   * Install dependencies with `mix deps.get`
 
 
-In the MongoDB console ('mongo') you have to do this:
+Run the MongoDB console
+   `mongo` from a Terminal window and do this:
+
    `use my_app_db`
 
 Then
@@ -40,7 +44,7 @@ Now you can do the following
   )
 ```
 
-Then
+Then, from a Terminal window,
 
   * Run the tests with `mix test`
   * Start Phoenix with `mix phx.server`
@@ -68,9 +72,9 @@ def start(_type, _args) do
 end
 ```
 
-You can also do this    
+You can also do this from a Terminal window   
 
-`$ iex -S mix phx.server`
+`iex -S mix phx.server`
 
 ```
 Mongo.start_link(
