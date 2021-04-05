@@ -99,6 +99,9 @@ You can now start entering articles. Each article has a name and classification,
 
 The Edit button takes you to an HTML editor, which has a Save button and an auto-save feature.
 
+If you create an article with classification 'sidebar', and give it a 'url' field pointing to another article, the sidebar is shown on the left of the other article, in READ mode, as a retractable nav bar. The URL should contain 'read', e.g.
+`http://localhost:4000/read/edit/G1aKp` NOT `http://localhost:4000/write/edit/G1aKp`.
+
 Your articles are initially saved in a memory database, controlled by memory_db.ex. Every few minutes, background_saver.ex checks to see if any of the articles have changed (using a hash in hash_stack.ex), or if there are any new ones. It then synchronises the memory_db with the Mongo DB, which is permanent storage for after the app exits. If you delete an article using the Delete button, it is immediately deleted from the Mongo DB.
 
 How often the auto-saver saves is given by the first number in the following section in the files in the config/ folder:
