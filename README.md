@@ -18,7 +18,8 @@ Run the MongoDB console
    `use my_app_db`
 
 Then
-   `db.article.insert({name: "Ada Lovelace", classification: "programmer"})`
+   `db.article.insert({name: "Ada Lovelace", classification: "programmer",
+                       _id: "ffffffffffffffffffffffff", short_id: "4444j" })`
 
 This creates this database if it doesn't already exist   
 
