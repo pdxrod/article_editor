@@ -263,7 +263,8 @@ defmodule SimpleMongoAppWeb.WriteController do
         assign(conn, :c, args[ "c" ])
 
       _ ->
-        Utils.debug "Not found - this just means displaying the page, not hitting a button"
+        Utils.debug "Not found - this just means displaying a page, not hitting a button"
+        assign(conn, :p, args[ "p" ])
         assign(conn, :error, nil)
     end
   end

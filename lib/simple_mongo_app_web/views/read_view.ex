@@ -7,6 +7,10 @@ defmodule SimpleMongoAppWeb.ReadView do
     HtmlUtils.show_classifications "/"
   end
 
+  def show_pages do
+    HtmlUtils.show_pages "/"
+  end
+
   def show_articles( s, c ) do
     try do
       HtmlUtils.select_articles MemoryDb.articles( ), s, c, false

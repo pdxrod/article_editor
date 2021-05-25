@@ -1,8 +1,10 @@
 <script type="text/javascript">
-  function getResults(s, c) { // s is the search string, c is a category the user clicked on
+
+  function getResults(s, c, p) { // s is the search string, c is a category the user clicked on, p is page if there are more than N posts
     var request = new XMLHttpRequest();
     if( ! s ) s = '_';
     if( ! c ) c = '_';
+    if( ! p ) p = '1';
     request.open('GET', '/write/find/' + s + '/' + c, true);
     request.send(null);
     request.onreadystatechange = function () {
@@ -25,11 +27,11 @@
       if( ! s ) s = "";
       if( "_" === s ) s = "";
       s = s.trim();
-      if( s.length < 1 || s.length > 2 ) getResults(s, "_");
+      if( s.length < 1 || s.length > 2 ) getResults(s, "_", '<%= if assigns[:p], do: assigns[:p], else: "1" %>');
     } )
   }
 
-  getResults('_', '<%= if assigns[:c], do: assigns[:c], else: "_" %>');
+  getResults('_', '<%= if assigns[:c], do: assigns[:c], else: "_" %>', '<%= if assigns[:p], do: assigns[:p], else: "1" %>');
 </script>
 
 <span id="_error" style='color: #000000; background-color: #cccccc;'></span>
@@ -42,6 +44,10 @@
 
   <div id="_classifications">
     <%= show_classifications() |> raw() %>
+  </div>
+
+  <div id="_page">
+    <%= show_pages() |> raw() %>
   </div>
 
   <div id="_results">

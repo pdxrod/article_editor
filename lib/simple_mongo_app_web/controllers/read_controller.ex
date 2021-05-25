@@ -37,10 +37,14 @@ defmodule SimpleMongoAppWeb.ReadController do
       Utils.debug "index()"
       conn =
         if args[ "c" ] do
-          Utils.debug "c is set - it's #{args["c"]}"
-          assign(conn, :c, args[ "c" ])
+          class = args["c"]
+          page_num = args["p"]
+          assign(conn, :c, class)
+          assign(conn, :p, page_num)
         else
-          Utils.debug "Just looking at the index page"
+          page_num = args["p"]
+          assign(conn, :p, page_num)
+          Utils.debug "Just looking at the index page with page_num #{page_num}", 3
           conn
         end
       render conn, "index.html"

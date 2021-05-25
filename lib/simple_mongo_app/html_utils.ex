@@ -541,4 +541,8 @@ defmodule SimpleMongoApp.HtmlUtils do
          "&nbsp;&nbsp;<u><a href='#{ url }?c=#{ val }'>#{ val }</a></u>" <> htmlify_classifications( tl, url )
     end
   end
+
+  def show_pages(url) do
+    "<u><a href='#{ url }?p=#{ "1" }'>#{ "1" }</a></u>"
+  end
 end

@@ -16,6 +16,10 @@ defmodule SimpleMongoAppWeb.WriteView do
     HtmlUtils.show_classifications "/write"
   end
 
+  def show_pages do
+    HtmlUtils.show_pages "/write"
+  end
+
   def show_articles( s, c ) do
     try do
       rows = HtmlUtils.select_articles MemoryDb.articles( ), s, c, true
