@@ -2,7 +2,7 @@
 
 <table class="table">
   <tbody>
-    <%= for article <- show_articles( assigns[ :s ], assigns[ :c ] ) do %>
+    <%= for article <- show_articles( assigns[ :s ], assigns[ :c ], assigns[ :p ] ) do %>
       <tr>
 
         <td class="text-left">

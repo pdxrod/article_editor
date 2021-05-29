@@ -178,7 +178,8 @@ SAVE
   def number_of_pages do
     timings = Utils.timings()
     articles_per_page = elem( timings, 2 )
-    num = div( length( articles()), articles_per_page )
+    list = Enum.filter( articles(), fn(article) -> "sidebar" != elem(article, 1)[ "classification" ] end)
+    num = div( length( list ), articles_per_page )
     num = if 0 == num, do: 1, else: num
     mod = rem( num, articles_per_page )
     num = if 0 == mod, do: num, else: num + 1

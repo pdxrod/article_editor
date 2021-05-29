@@ -20,9 +20,9 @@ defmodule SimpleMongoAppWeb.WriteView do
     HtmlUtils.show_pages "/write"
   end
 
-  def show_articles( s, c ) do
+  def show_articles( s, c, p ) do
     try do
-      rows = HtmlUtils.select_articles MemoryDb.articles( ), s, c, true
+      rows = HtmlUtils.select_articles MemoryDb.articles( ), s, c, true, p
       empty_row() ++ rows
     rescue
       re in RuntimeError -> re

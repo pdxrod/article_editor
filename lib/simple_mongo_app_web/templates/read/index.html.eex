@@ -5,7 +5,7 @@
     if( ! s ) s = '_';
     if( ! c ) c = '_';
     if( ! p ) p = '1';
-    request.open('GET', '/read/find/' + s + '/' + c, true);
+    request.open('GET', '/read/find/' + s + '/' + c + '/' + p, true);
     request.send(null);
     request.onreadystatechange = function () {
       if (request.status === 200) {

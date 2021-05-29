@@ -244,7 +244,7 @@ defmodule SimpleMongoApp.HtmlUtils do
     str
   end
 
-  def select_articles( articles, s, c, write ) do
+  def select_articles( articles, s, c, write, p ) do
     articles = if write do
       articles
     else # We don't show sidebar articles on the main page of the main site, because they appear in their articles' read/edit pages
@@ -264,9 +264,9 @@ defmodule SimpleMongoApp.HtmlUtils do
             single_quotes_class_regex = ~r/classification.+name.+value='#{ c }'/
             double_quotes_class_regex = ~r/classification.+name.+value="#{ c }"/
             if article =~ single_quotes_class_regex || article =~ double_quotes_class_regex do
-              [ { id, article } ] ++ select_articles( tl, s, c, write )
+              [ { id, article } ] ++ select_articles( tl, s, c, write, p )
             else
-              select_articles tl, s, c, write
+              select_articles tl, s, c, write, p
             end
           true ->               # Sometimes it's value='value', sometimes it's value="value" (double quotes)
             s = if nil == s, do: "", else: String.downcase s
@@ -275,9 +275,9 @@ defmodule SimpleMongoApp.HtmlUtils do
             eitherquotes = String.downcase( singlequotes ) <> String.downcase( doublequotes )
             Utils.debug "\nselect_articles s is #{s}, eitherquotes is #{eitherquotes}, eitherquotes contans s? #{String.contains?( eitherquotes, s ) }", 2
             if String.contains?( eitherquotes, s ) do
-              [ { id, article } ] ++ select_articles( tl, s, c, write )
+              [ { id, article } ] ++ select_articles( tl, s, c, write, p )
             else
-              select_articles tl, s, c, write
+              select_articles tl, s, c, write, p
             end
         end
     end
@@ -438,7 +438,7 @@ defmodule SimpleMongoApp.HtmlUtils do
      "international", "vn", "xxx", "co", "coop", "mil", "biz", "nz", "us", "net", "il", "it", "ps", "pn", "de", "fr", "th", "is", "at"]
   end
 
-# %{"c" => "post", "s" => "_"}
+# %{"c" => "online article", "s" => "_", "p" => "2"}
   def find( conn, params ) do
     Utils.debug "find()"
     args = trim_vals params
@@ -447,6 +447,7 @@ defmodule SimpleMongoApp.HtmlUtils do
     s = if "_" == s, do: "", else: s
     c = args[ "c" ]
     c = if "_" == c, do: "", else: c
+    p = args[ "p" ]
     conn = if Utils.notmt? s do
       Utils.debug "find() - parameter s #{s}"
       conn = assign( conn, :s, s )
@@ -460,6 +461,7 @@ defmodule SimpleMongoApp.HtmlUtils do
       else
         assign( conn, :c, "" )
       end
+      assign( conn, :p, p )
     end
 
     conn = assign(conn, :a, args["a"])

@@ -11,9 +11,9 @@ defmodule SimpleMongoAppWeb.ReadView do
     HtmlUtils.show_pages "/"
   end
 
-  def show_articles( s, c ) do
+  def show_articles( s, c, p ) do
     try do
-      HtmlUtils.select_articles MemoryDb.articles( ), s, c, false
+      HtmlUtils.select_articles MemoryDb.articles( ), s, c, false, p
     rescue
       re in RuntimeError -> re
       [ { "decaf0ff", "Error: #{ re.message }" } ]
