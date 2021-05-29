@@ -254,6 +254,12 @@ defmodule ArticleTest do
 
     test "pages" do
       list = ["a", "b", "c", "d", "e"]
+      pages = [1, 2]
+      selection = Utils.select list, pages
+      assert ["a", "b"] == selection
+      pages = [2, 3, 4]
+      selection = Utils.select list, pages
+      assert ["b", "c", "d"] == selection
       range = 1..1
       selection = Utils.selection list, range
       assert ["a"] == selection

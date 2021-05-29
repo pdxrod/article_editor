@@ -67,9 +67,9 @@ SAVE
     article = peek( hex )
     if sid && article, do: article = Map.merge article, sid_map # sid will be nil if id is an ip address
     if article == new_article do
-      if id =~ Utils.hex_24_chars_regex() || id =~ Utils.base_58_5_chars_regex(), do: Utils.debug "MemoryDb article exists in map - not putting '#{ hex } #{ sid }' #{Utils.debug_ids new_article}", 3
+      if id =~ Utils.hex_24_chars_regex() || id =~ Utils.base_58_5_chars_regex(), do: Utils.debug "MemoryDb article exists in map - not putting '#{ hex } #{ sid }' #{Utils.debug_ids new_article}", 2
     else
-      if id =~ Utils.hex_24_chars_regex() || id =~ Utils.base_58_5_chars_regex(), do: Utils.debug "MemoryDb article doesn't exist in map - putting '#{ hex } #{ sid }' #{Utils.debug_ids new_article}", 3
+      if id =~ Utils.hex_24_chars_regex() || id =~ Utils.base_58_5_chars_regex(), do: Utils.debug "MemoryDb article doesn't exist in map - putting '#{ hex } #{ sid }' #{Utils.debug_ids new_article}", 2
       Agent.update(__MODULE__, &Map.put( &1, id, new_article ))
     end
     new_article

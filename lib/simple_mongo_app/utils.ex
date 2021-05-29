@@ -143,7 +143,7 @@ defmodule SimpleMongoApp.Utils do
     case typeof( obj ) do
       "nil" -> "nil"
       "atom" -> ":#{ obj }"
-      "integer" -> "#{ obj }"
+      "integer" -> "'#{ obj }'"
       "datetime" -> "#{ obj }"
       "binary" -> "'#{ sample obj }'"
       "tuple" -> "tuple 0 #{elem obj, 0} "
@@ -174,24 +174,24 @@ defmodule SimpleMongoApp.Utils do
     end
   end
 
-  def index( list, num ) do
-    case list do
-      [] -> []
-      _ -> [List.first list]
+  def select( list, pages ) do
+    debug( "list #{debug_ids list}, pages #{debug_ids pages}", 3 )
+
+    if [] == pages do
+      []
+    else
+      if [] == list do
+        list
+      else
+        num = hd(pages) - 1
+        [Enum.at( list, num )] ++ select( tl(list), tl(pages) )
+      end
     end
   end
 
   def selection( list, range ) do
     pages = Enum.to_list range
-    if [] == list || [] == pages do
-      []
-    else
-      pghd = [hd pages]
-      pgtl = tl pages
-      lstl = tl list
-      hdpgtl = if 1 < length( pages ), do: [hd pgtl], else: []
-      index( list, pghd ) ++ index( lstl, hdpgtl )
-    end
+    select( list, pages )
   end
 
 end
