@@ -263,7 +263,7 @@ defmodule ArticleTest do
       range = 1..1
       selection = Utils.selection list, range
       assert ["a"] == selection
-      range = 5..99
+      range = 5..5
       selection = Utils.selection list, range
       assert ["e"] == selection
       range = 1..5

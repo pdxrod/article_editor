@@ -175,17 +175,12 @@ defmodule SimpleMongoApp.Utils do
   end
 
   def select( list, pages ) do
-    debug( "list #{debug_ids list}, pages #{debug_ids pages}", 3 )
-
     if [] == pages do
       []
     else
-      if [] == list do
-        list
-      else
-        num = hd(pages) - 1
-        [Enum.at( list, num )] ++ select( tl(list), tl(pages) )
-      end
+      num = hd(pages) - 1
+      results = [Enum.at( list, num )] ++ select( list, tl(pages) )
+      Enum.filter( results, fn(article) -> nil != article end)
     end
   end
 
