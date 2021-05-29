@@ -260,11 +260,12 @@ defmodule SimpleMongoAppWeb.WriteController do
         assign(conn, :error, nil)
         str = args[ "c" ]
         Utils.debug "Found parameter c - it's #{ str }"
-        assign(conn, :c, args[ "c" ])
+        assign(conn, :c, str)
 
       _ ->
         Utils.debug "Not found - this just means displaying a page, not hitting a button"
-        assign(conn, :p, args[ "p" ])
+        page_num = args[ "p" ]
+        assign(conn, :p, page_num)
         assign(conn, :error, nil)
     end
   end

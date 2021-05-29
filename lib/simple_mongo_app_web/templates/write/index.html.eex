@@ -46,7 +46,7 @@
     <%= show_classifications() |> raw() %>
   </div>
 
-  <div id="_page">
+  <div id="_pages">
     <%= show_pages() |> raw() %>
   </div>
 

@@ -175,6 +175,16 @@ SAVE
     sorted_articles
   end
 
+  def number_of_pages do
+    timings = Utils.timings()
+    articles_per_page = elem( timings, 2 )
+    num = div( length( articles()), articles_per_page )
+    num = if 0 == num, do: 1, else: num
+    mod = rem( num, articles_per_page )
+    num = if 0 == mod, do: num, else: num + 1
+    num
+  end
+
   def find( classification, name ) do
     the_articles = articles()
     list = find_by_classification_and_name( the_articles, classification, name )

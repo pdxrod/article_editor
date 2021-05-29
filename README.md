@@ -111,11 +111,11 @@ Your articles are initially saved in a memory database, controlled by memory_db.
 
 How often the auto-saver saves is given by the first number in the following section in the files in the config/ folder:
 
-`config :simple_mongo_app, timings: {27, 11, 1700} `
+`config :simple_mongo_app, timings: {27, 11, 17} `
 
 The second number is how often the background_saver transfers those articles in the memory_db which have changed since they were read from the Mongo DB, or are new. The third number is not used currently. For example, if you want to auto-save from the editor every twelve minutes in development mode, and background-save every 25 minutes, you would put the following in config/dev.exs:
 
-`config :simple_mongo_app, timings: {12, 25, 1700} `
+`config :simple_mongo_app, timings: {12, 25, 17} `
 
 
 The user names and passwords are given in the following sections in config/config.exs

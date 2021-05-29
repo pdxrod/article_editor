@@ -542,7 +542,20 @@ defmodule SimpleMongoApp.HtmlUtils do
     end
   end
 
+  def page_url( url, num ) do
+    "&nbsp;<b><u><a href='#{ url }?p=#{ num }'>#{ num }</a></u></b>"
+  end
+
+  def page_urls( url, num ) do
+    if 0 == num do
+      ""
+    else
+      page_urls( url, num - 1 ) <> page_url( url, num )
+    end
+  end
+
   def show_pages(url) do
-    "<u><a href='#{ url }?p=#{ "1" }'>#{ "1" }</a></u>"
+    num_pages = MemoryDb.number_of_pages()
+    "Pages " <> page_urls( url, num_pages )
   end
 end
