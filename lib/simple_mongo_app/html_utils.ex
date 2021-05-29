@@ -250,6 +250,7 @@ defmodule SimpleMongoApp.HtmlUtils do
     else # We don't show sidebar articles on the main page of the main site, because they appear in their articles' read/edit pages
       Enum.filter( articles, fn(article) -> "sidebar" != elem(article, 1)[ "classification" ] end)
     end
+    articles = MemoryDb.articles_for_page( articles, p )
     case articles do
       [] -> []
       [hd | tl] ->
@@ -447,7 +448,6 @@ defmodule SimpleMongoApp.HtmlUtils do
     s = if "_" == s, do: "", else: s
     c = args[ "c" ]
     c = if "_" == c, do: "", else: c
-    p = args[ "p" ]
     conn = if Utils.notmt? s do
       Utils.debug "find() - parameter s #{s}"
       conn = assign( conn, :s, s )
@@ -461,11 +461,10 @@ defmodule SimpleMongoApp.HtmlUtils do
       else
         assign( conn, :c, "" )
       end
-      assign( conn, :p, p )
     end
-
-    conn = assign(conn, :a, args["a"])
-    Utils.debug "find() - a is #{args["a"]}"
+    conn = assign( conn, :p, args[ "p" ] )
+    conn = assign( conn, :a, args[ "a" ] )
+    Utils.debug "find() - a is #{args[ "a" ]}"
     render conn, "find.html", layout: false
   end
 

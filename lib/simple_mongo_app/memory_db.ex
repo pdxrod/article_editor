@@ -175,6 +175,14 @@ SAVE
     sorted_articles
   end
 
+  def articles_for_page( list, numstr ) do
+    timings = Utils.timings()
+    articles_per_page = elem( timings, 2 )
+    {num, _} = Integer.parse numstr
+    range = num..(num + articles_per_page)
+    list
+  end
+
   def number_of_pages do
     timings = Utils.timings()
     articles_per_page = elem( timings, 2 )

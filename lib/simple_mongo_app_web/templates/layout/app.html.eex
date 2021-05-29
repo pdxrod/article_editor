@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title><%= assigns[:title] || "simple article editor" %></title>
+    <title><%= assigns[:title] || "article editor" %></title>
 
     <link rel="stylesheet" href="/css/bootstrap.css">
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">

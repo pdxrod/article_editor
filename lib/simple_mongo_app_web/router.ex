@@ -20,7 +20,7 @@ defmodule SimpleMongoAppWeb.Router do
     get "/write", WriteController, :index
     post "/write/edit/:id", WriteController, :edit
     get "/write/edit/:id", WriteController, :edit
-    get "/write/find/:s/:c", WriteController, :find
+    get "/write/find/:s/:c/:p", WriteController, :find
     post "/write/login", WriteController, :login
     get "/write/login", WriteController, :login
   end

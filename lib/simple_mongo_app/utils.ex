@@ -174,4 +174,24 @@ defmodule SimpleMongoApp.Utils do
     end
   end
 
+  def index( list, num ) do
+    case list do
+      [] -> []
+      _ -> [List.first list]
+    end
+  end
+
+  def selection( list, range ) do
+    pages = Enum.to_list range
+    if [] == list || [] == pages do
+      []
+    else
+      pghd = [hd pages]
+      pgtl = tl pages
+      lstl = tl list
+      hdpgtl = if 1 < length( pages ), do: [hd pgtl], else: []
+      index( list, pghd ) ++ index( lstl, hdpgtl )
+    end
+  end
+
 end

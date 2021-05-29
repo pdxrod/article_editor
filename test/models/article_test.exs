@@ -252,6 +252,25 @@ defmodule ArticleTest do
       assert "" == sidebar
     end
 
+    test "pages" do
+      list = ["a", "b", "c", "d", "e"]
+      range = 1..1
+      selection = Utils.selection list, range
+      assert ["a"] == selection
+      range = 5..99
+      selection = Utils.selection list, range
+      assert ["e"] == selection
+      range = 1..5
+      selection = Utils.selection list, range
+      assert ["a", "b", "c", "d", "e"] == selection
+      range = 2..4
+      selection = Utils.selection list, range
+      assert ["b", "c", "d"] == selection
+      list = []
+      selection = Utils.selection list, range
+      assert [] == selection
+    end
+
     test "time" do # See login_utils
       now = DateTime.utc_now()
       from_now_24_hours = DateTime.add now, 24 * 60 * 60
