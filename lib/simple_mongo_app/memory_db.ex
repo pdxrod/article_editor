@@ -131,7 +131,8 @@ SAVE
     first = Enum.filter( sidebars, fn(article) ->  hex == id_from_url( elem(article, 1)["url"] ) end )
     second = Enum.filter( sidebars, fn(article) -> sid == id_from_url( elem(article, 1)["url"] ) end )
     unique = ( first ++ second ) |> Enum.uniq()
-    unique
+    sorted = Enum.sort( unique, &(DatetimeUtils.datetime2unix( &1 ) > DatetimeUtils.datetime2unix( &2 ) ) )
+    sorted
   end
 
   def id_from_url( url ) do

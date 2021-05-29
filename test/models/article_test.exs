@@ -228,10 +228,12 @@ defmodule ArticleTest do
       url = "http://foobarbaz.com/read/edit/#{ sid }"
       id = MemoryDb.id_from_url url
       assert id == sid
-      two = %{"classification" => "sidebar", "page" => "<p>This is also the sidebar</p>", "url" => url, "name" => "two", "_id" => id2, "short_id" => map["short_id"]}
+      now = DateTime.utc_now()
+      later = DateTime.add( now, 60 )
+      two = %{"datetime" => now, "classification" => "sidebar", "page" => "<p>This is the first sidebar</p>", "url" => url, "name" => "two", "_id" => id2, "short_id" => map["short_id"]}
       hex = String.slice( RandomBytes.base16, 0..23 )
       short_id = Base58.hex_id_to_short_id hex
-      three = %{"classification" => "sidebar", "page" => "<p>This is another sidebar</p>", "url" => url, "name" => "three", "_id" => hex, "short_id" => short_id}
+      three = %{"datetime" => later, "classification" => "sidebar", "page" => "<p>This is the second sidebar</p>", "url" => url, "name" => "three", "_id" => hex, "short_id" => short_id}
 
       MemoryDb.put id2, two
       MemoryDb.put hex, three
@@ -240,10 +242,10 @@ defmodule ArticleTest do
 
       main = MemoryDb.peek id1
       sidebar = HtmlUtils.sidebar main
-      assert "<p>This is another sidebar</p><br/>\n<p>This is also the sidebar</p><br/>\n" == sidebar
+      assert "<p>This is the second sidebar</p><br/>\n<p>This is the first sidebar</p><br/>\n" == sidebar
       main = MemoryDb.peek sid
       sidebar = HtmlUtils.sidebar main
-      assert "<p>This is another sidebar</p><br/>\n<p>This is also the sidebar</p><br/>\n" == sidebar
+      assert "<p>This is the second sidebar</p><br/>\n<p>This is the first sidebar</p><br/>\n" == sidebar
 
       other = MemoryDb.peek id2
       sidebar = HtmlUtils.sidebar other
