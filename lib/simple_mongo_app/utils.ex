@@ -174,15 +174,25 @@ defmodule SimpleMongoApp.Utils do
     end
   end
 
+  def selection( list, first, last ) do
+    if first > length( list ) - 1 do
+      []
+    else
+      if first == last do
+        [Enum.at( list, first )]
+      else
+        [Enum.at( list, first )] ++ selection( list, first + 1, last )
+      end
+    end
+  end
+
   def select( list, pages ) do
     if [] == pages do
       []
     else
-      num = hd(pages) - 1
-      item = Enum.at( list, num )
-      if "tuple" == typeof(item), do: debug "Utils.select, list #{length list} pages #{length pages} num #{num} item '#{ elem(item, 1)["name"] }'", 3
-      results = if nil == item, do: select( list, tl( pages )), else: [item] ++ select( list, tl(pages) )
-      results
+      one = (List.first pages) - 1
+      two = (List.last pages) - 1
+      selection( list, one, two )
     end
   end
 
