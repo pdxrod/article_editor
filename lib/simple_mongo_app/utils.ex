@@ -179,8 +179,10 @@ defmodule SimpleMongoApp.Utils do
       []
     else
       num = hd(pages) - 1
-      results = [Enum.at( list, num )] ++ select( list, tl(pages) )
-      Enum.filter( results, fn(article) -> nil != article end)
+      item = Enum.at( list, num )
+      if "tuple" == typeof(item), do: debug "Utils.select, list #{length list} pages #{length pages} num #{num} item '#{ elem(item, 1)["name"] }'", 3
+      results = if nil == item, do: select( list, tl( pages )), else: [item] ++ select( list, tl(pages) )
+      results
     end
   end
 

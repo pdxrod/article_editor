@@ -67,14 +67,14 @@ defmodule SimpleMongoApp.BackgroundSaver do
     sid = map["short_id"]
     old_hash = HashStack.peek id3
     if old_hash != new_hash do
-      if id3 =~ Utils.hex_24_chars_regex(), do: Utils.debug "\nBackgroundSaver save_in_mongo_and_update_hash_in_map_if_it_has_changed? SAVING id '#{id3}'", 3
+      if id3 =~ Utils.hex_24_chars_regex(), do: Utils.debug "BackgroundSaver save_in_mongo_and_update_hash_in_map_if_it_has_changed? SAVING id '#{id3}'\n", 3
       HashStack.put id3, new_hash
       id_map = %{"_id" => id3}
       sid_map = %{"short_id" => sid}
       article = Map.merge article, sid_map
       MongoDb.find_one_and_replace( id_map, article )
     else
-      if id3 =~ Utils.hex_24_chars_regex(), do: Utils.debug "BackgroundSaver save_in_mongo_and_update_hash_in_map_if_it_has_changed? NOT SAVING id '#{id3}'", 3
+      if id3 =~ Utils.hex_24_chars_regex(), do: Utils.debug "BackgroundSaver save_in_mongo_and_update_hash_in_map_if_it_has_changed? NOT SAVING id '#{id3}'\n", 3
     end
   end
 

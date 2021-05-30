@@ -177,9 +177,13 @@ SAVE
 
   def articles_for_page( list, numstr ) do
     timings = Utils.timings()
-    articles_per_page = elem( timings, 2 )
+    len = length list
+    app = elem( timings, 2 ) # articles per page
+    app = if len > app, do: len, else: app
     {num, _} = Integer.parse numstr
-    range = num..(num + articles_per_page)
+    num = abs num
+    app = num + app
+    range = num..app
     Utils.selection list, range
   end
 
