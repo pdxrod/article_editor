@@ -93,6 +93,7 @@ defmodule SimpleMongoAppWeb.WriteController do
    map = Map.delete( map, "new_value" )
    map = Map.delete( map, "short_id" )
    map = Map.delete( map, "date" )
+   map = Map.delete( map, "p" )
    key = find_button_key( Map.keys( map ))
    Map.delete( map, key )
   end
