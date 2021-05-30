@@ -326,14 +326,12 @@ defmodule SimpleMongoAppWeb.WriteController do
       Utils.debug "index()", 2
       args = HtmlUtils.trim_vals params
       if LoginUtils.logged_in_and_not_timed_out?( conn ) do
-        Utils.debug "login LoginUtils.logged_in_and_not_timed_out?() true", 2
         LoginUtils.save_login_time! conn
-        Utils.debug "index about to analyze_index_params_and_save", 2
         conn = analyze_index_params_and_save conn, args
-        Utils.debug "index after analyze_index_params_and_save", 2
+        page_num = args["p"]
+        conn = assign(conn, :p, page_num)
         render conn, "index.html"
       else
-        Utils.debug "login LoginUtils.logged_in_and_not_timed_out?() false", 2
         login conn, args
       end
     end
