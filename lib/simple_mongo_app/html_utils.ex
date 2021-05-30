@@ -252,7 +252,7 @@ defmodule SimpleMongoApp.HtmlUtils do
     end
     articles = MemoryDb.articles_for_page( articles, p )
     first = if [] == articles, do: "nothing", else: elem(hd(articles), 1)["name"]
-    Utils.debug "select_articles size '#{length articles}' write '#{write}' p '#{p}' hd(articles) '#{first}'", 3
+    Utils.debug "select_articles size '#{length articles}' write '#{write}' p '#{p}' hd(articles) '#{first}'", 2
     case articles do
       [] -> []
       [hd | tl] ->
@@ -446,7 +446,7 @@ defmodule SimpleMongoApp.HtmlUtils do
     c = args[ "c" ]
     c = if "_" == c, do: "", else: c
     p = args[ "p" ]
-    Utils.debug "HtmlUtils.find() - p is '#{p}'", 3
+    Utils.debug "HtmlUtils.find() - p is '#{p}'"
     p = if ! p, do: "1", else: p
 
     conn = if Utils.notmt? s do
@@ -465,7 +465,7 @@ defmodule SimpleMongoApp.HtmlUtils do
     end
     conn = assign( conn, :a, args[ "a" ] )
     conn = assign( conn, :p, p )
-    Utils.debug "HtmlUtils.find() - p is #{p}", 3
+    Utils.debug "HtmlUtils.find() - p is #{p}"
     render conn, "find.html", layout: false
   end
 

@@ -43,9 +43,7 @@ defmodule SimpleMongoAppWeb.ReadController do
           assign(conn, :p, page_num)
         else
           page_num = args["p"]
-          conn = assign(conn, :p, page_num)
-          Utils.debug "Just looking at the index page with page_num #{page_num}", 3
-          conn
+          assign(conn, :p, page_num)
         end
       render conn, "index.html"
     end
