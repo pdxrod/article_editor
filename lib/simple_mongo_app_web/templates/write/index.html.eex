@@ -2,9 +2,9 @@
 
   function getResults(s, c, p) { // s is the search string, c is a category the user clicked on, p is page if there are more than N posts
     var request = new XMLHttpRequest();
-    if( ! s ) s = '_';
-    if( ! c ) c = '_';
-    if( ! p ) p = '1';
+    if( ! s || s == '' ) s = '_';
+    if( ! c || c == '' ) c = '_';
+    if( ! p || p == '' ) p = '1';
     request.open('GET', '/write/find/' + s + '/' + c + '/' + p, true);
     request.send(null);
     request.onreadystatechange = function () {
@@ -31,7 +31,10 @@
     } )
   }
 
-  getResults('_', '<%= if assigns[:c], do: assigns[:c], else: "_" %>', '<%= if assigns[:p], do: assigns[:p], else: "1" %>');
+  s = '_';
+  c = '<%= assigns[:c] %>';
+  p = '<%= assigns[:p] %>';
+  getResults( s, c, p );
 </script>
 
 <span id="_error" style='color: #000000; background-color: #cccccc;'></span>

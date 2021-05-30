@@ -22,8 +22,7 @@ defmodule SimpleMongoAppWeb.WriteView do
 
   def show_articles( s, c, p ) do
     try do
-      rows = HtmlUtils.select_articles MemoryDb.articles( ), s, c, true, p
-      empty_row() ++ rows
+      empty_row() ++ HtmlUtils.select_articles MemoryDb.articles( ), s, c, true, p
     rescue
       re in RuntimeError -> re
       [ { "decaf0ff", "Error: #{ re.message }" } ]

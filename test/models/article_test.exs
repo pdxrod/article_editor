@@ -254,7 +254,7 @@ defmodule ArticleTest do
 
     test "pages" do
       list = ["a", "b", "c", "d", "e"]
-      pages = [1, 2]
+      pages = [1, 2] 
       selection = Utils.select list, pages
       assert ["a", "b"] == selection
       pages = [2, 3, 4]

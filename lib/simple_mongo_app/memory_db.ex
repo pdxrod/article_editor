@@ -180,7 +180,7 @@ SAVE
     articles_per_page = elem( timings, 2 )
     {num, _} = Integer.parse numstr
     range = num..(num + articles_per_page)
-    list
+    Utils.selection list, range
   end
 
   def number_of_pages do

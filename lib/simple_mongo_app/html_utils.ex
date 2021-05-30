@@ -251,6 +251,8 @@ defmodule SimpleMongoApp.HtmlUtils do
       Enum.filter( articles, fn(article) -> "sidebar" != elem(article, 1)[ "classification" ] end)
     end
     articles = MemoryDb.articles_for_page( articles, p )
+    first = if [] == articles, do: "nothing", else: elem(hd(articles), 1)["name"]
+    Utils.debug "select_articles size '#{length articles}' write '#{write}' p '#{p}' hd(articles) '#{first}'", 3
     case articles do
       [] -> []
       [hd | tl] ->
@@ -434,11 +436,6 @@ defmodule SimpleMongoApp.HtmlUtils do
     new_map
   end
 
-  def endings do
-    ["com", "org", "info", "edu", "uk", "au", "tv", "gov", "es", "za", "media", "me", "my", "ru", "ua", "ch", "cloud", "tr", "online",
-     "international", "vn", "xxx", "co", "coop", "mil", "biz", "nz", "us", "net", "il", "it", "ps", "pn", "de", "fr", "th", "is", "at"]
-  end
-
 # %{"c" => "online article", "s" => "_", "p" => "2"}
   def find( conn, params ) do
     Utils.debug "find()"
@@ -448,6 +445,10 @@ defmodule SimpleMongoApp.HtmlUtils do
     s = if "_" == s, do: "", else: s
     c = args[ "c" ]
     c = if "_" == c, do: "", else: c
+    p = args[ "p" ]
+    Utils.debug "HtmlUtils.find() - p is '#{p}'", 3
+    p = if ! p, do: "1", else: p
+
     conn = if Utils.notmt? s do
       Utils.debug "find() - parameter s #{s}"
       conn = assign( conn, :s, s )
@@ -462,9 +463,9 @@ defmodule SimpleMongoApp.HtmlUtils do
         assign( conn, :c, "" )
       end
     end
-    conn = assign( conn, :p, args[ "p" ] )
     conn = assign( conn, :a, args[ "a" ] )
-    Utils.debug "find() - a is #{args[ "a" ]}"
+    conn = assign( conn, :p, p )
+    Utils.debug "HtmlUtils.find() - p is #{p}", 3
     render conn, "find.html", layout: false
   end
 
