@@ -176,25 +176,34 @@ SAVE
   end
 
   def articles_for_page( list, numstr ) do
-    timings = Utils.timings()
-    len = length list
-    app = elem( timings, 2 ) # articles per page
-    app = if len > app, do: len, else: app
-    {num, _} = Integer.parse numstr
-    num = abs num
-    app = num + app
-    range = num..app
-    Utils.selection list, range
+    if true do
+      list
+    else
+      timings = Utils.timings()
+      app = elem( timings, 2 ) # articles per page
+      len = length list
+      range = Utils.range( list, numstr, app )
+      numbers = range |> Enum.to_list()
+      one = List.first numbers
+      two = List.last numbers
+      Utils.debug "MemoryDb.articles_for_page num #{numstr} app #{app} len #{len}, Utils.selection( list #{len}, #{one}, #{two} )", 3
+      Utils.selection list, one, two
+    end
   end
 
-  def number_of_pages do
+  def number_of_pages( url ) do
     timings = Utils.timings()
-    articles_per_page = elem( timings, 2 )
-    list = Enum.filter( articles(), fn(article) -> "sidebar" != elem(article, 1)[ "classification" ] end)
-    num = div( length( list ), articles_per_page )
+    app = elem( timings, 2 ) # articles per page
+    list = articles()
+    list = if "/write" == url, do: list, else: Enum.filter( list, fn(article) -> "sidebar" != elem(article, 1)[ "classification" ] end)
+    len = length list
+    app = if app > len, do: len, else: app
+    num = div( len, app )
+    Utils.debug "MemoryDb.number_of_pages num #{num} app #{app} len #{len}", 2
     num = if 0 == num, do: 1, else: num
-    mod = rem( num, articles_per_page )
+    mod = rem( len, app )
     num = if 0 == mod, do: num, else: num + 1
+    Utils.debug "MemoryDb.number_of_pages num #{num} app #{app} mod #{mod}", 2
     num
   end
 

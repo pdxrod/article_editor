@@ -254,26 +254,27 @@ defmodule ArticleTest do
 
     test "pages" do
       list = ["a", "b", "c", "d", "e"]
-      pages = [1, 2]
-      selection = Utils.select list, pages
-      assert ["a", "b"] == selection
-      pages = [2, 3, 4]
-      selection = Utils.select list, pages
-      assert ["b", "c", "d"] == selection
-      range = 1..1
-      selection = Utils.selection list, range
+      assert 5 == length( list )
+      assert 1..5 = Utils.range( list, "1", 5)
+      assert 1..4 = Utils.range( list, "1", 4)
+      assert 5..5 = Utils.range( list, "2", 4)
+      assert 1..3 = Utils.range( list, "1", 3)
+      assert 4..5 = Utils.range( list, "2", 3)
+      assert 1..2 = Utils.range( list, "1", 2)
+      assert 3..4 = Utils.range( list, "2", 2)
+      assert 5..5 = Utils.range( list, "3", 2)
+      assert 1..5 = Utils.range( list, "1", 6)
+      assert 1..5 = Utils.range( list, "1", 9)
+
+      selection = Utils.selection list, 1, 1
       assert ["a"] == selection
-      range = 5..5
-      selection = Utils.selection list, range
+      selection = Utils.selection 5, 5
       assert ["e"] == selection
-      range = 1..5
-      selection = Utils.selection list, range
+      selection = Utils.selection 1, 5
       assert ["a", "b", "c", "d", "e"] == selection
-      range = 2..4
-      selection = Utils.selection list, range
+      selection = Utils.selection list, 2, 4
       assert ["b", "c", "d"] == selection
-      list = []
-      selection = Utils.selection list, range
+      selection = Utils.selection [], 2, 4
       assert [] == selection
     end
 

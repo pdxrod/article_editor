@@ -174,7 +174,17 @@ defmodule SimpleMongoApp.Utils do
     end
   end
 
+  def range( list, which_page, app ) do
+    {num, _} = Integer.parse which_page
+    len = length list
+    first = div(len, num) + (app - 1)
+    last = first + (app - 1)
+    last = if last > len, do: len, else: last
+    first..last
+  end
+
   def selection( list, first, last ) do
+    debug "Utils.selection length ist #{length list} first #{first} last #{last}", 3
     if first > length( list ) - 1 do
       []
     else
@@ -184,21 +194,6 @@ defmodule SimpleMongoApp.Utils do
         [Enum.at( list, first )] ++ selection( list, first + 1, last )
       end
     end
-  end
-
-  def select( list, pages ) do
-    if [] == pages do
-      []
-    else
-      one = (List.first pages) - 1
-      two = (List.last pages) - 1
-      selection( list, one, two )
-    end
-  end
-
-  def selection( list, range ) do
-    pages = Enum.to_list range
-    select( list, pages )
   end
 
 end
