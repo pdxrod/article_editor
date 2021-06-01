@@ -174,13 +174,15 @@ defmodule SimpleMongoApp.Utils do
     end
   end
 
-  def range( list, which_page, app ) do               # a b c d e   2   4   5..5
-    {num, _} = Integer.parse which_page               # 2
-    len = length list                                 # 5
-    first = len * (num - 1)                           # 5
-    first = if first < 1, do: 1, else: first          # 5
-    last = first + (app - 1)                          # 8
-    last = if last > len, do: len, else: last         # 5
+  def range( list, which_page, app ) do               # a b c d e   2   4   5..5  # a b c d e   2  3   4..5      a b c d e   1   4  1..4
+    {num, _} = Integer.parse which_page               # 2                         2                               1
+    len = length list                                 # 5                         5                               5
+    first = 1                                         # 1                         1                               1
+    inc = app * (num - 1)
+    first = first + inc                               # 5                         4                               1
+    first = if first < 1, do: 1, else: first          # 5                         4                               1
+    last = first + (app - 1)                          # 8                         6                               4
+    last = if last > len, do: len, else: last         # 5                         5                               4
     first..last
   end
 
