@@ -181,8 +181,10 @@ SAVE
     len = length list
     {num, _} = Integer.parse numstr
     range = Utils.range( list, num, app )
-    Utils.debug "MemoryDb.articles_for_page num #{num} app #{app} len #{len}, Utils.selection( list #{len}, #{range} )", 2
-    Utils.selection list, range
+    selection = Utils.selection list, range
+    range_list = Enum.to_list range
+    Utils.debug "MemoryDb.articles_for_page list #{length list} numstr #{numstr} range #{List.first range_list}..#{List.last range_list}", 3
+    selection
   end
 
   def number_of_pages( url ) do

@@ -245,14 +245,7 @@ defmodule SimpleMongoApp.HtmlUtils do
   end
 
   def select_articles( articles, s, c, write, p ) do
-    articles = if write do
-      articles
-    else # We don't show sidebar articles on the main page of the main site, because they appear in their articles' read/edit pages
-      Enum.filter( articles, fn(article) -> "sidebar" != elem(article, 1)[ "classification" ] end)
-    end
-    articles = MemoryDb.articles_for_page( articles, p )
-    first = if [] == articles, do: "nothing", else: elem(hd(articles), 1)["name"]
-    Utils.debug "select_articles size '#{length articles}' write '#{write}' p '#{p}' hd(articles) '#{first}'", 2
+    Utils.debug "HtmlUtils.select_articles write #{write}, p '#{p}', length articles #{ length articles}", 2
     case articles do
       [] -> []
       [hd | tl] ->
@@ -549,7 +542,12 @@ defmodule SimpleMongoApp.HtmlUtils do
   end
 
   def page_urls( url, num ) do
-    "Pages " <> page_urls( url, num - 1 ) <> page_url( url, num )
+    Utils.debug "page_urls #{url} #{num}"
+    if num < 1 do
+      ""
+    else
+      page_urls( url, num - 1 ) <> page_url( url, num )
+    end
   end
 
   def show_pages( url ) do
@@ -557,7 +555,7 @@ defmodule SimpleMongoApp.HtmlUtils do
     if num_pages < 2 do
       ""
     else
-      page_urls( url, num_pages )
+      "Pages " <> page_urls( url, num_pages )
     end
   end
 end
