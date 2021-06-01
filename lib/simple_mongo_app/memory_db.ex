@@ -182,12 +182,10 @@ SAVE
       timings = Utils.timings()
       app = elem( timings, 2 ) # articles per page
       len = length list
-      range = Utils.range( list, numstr, app )
-      numbers = range |> Enum.to_list()
-      one = List.first numbers
-      two = List.last numbers
-      Utils.debug "MemoryDb.articles_for_page num #{numstr} app #{app} len #{len}, Utils.selection( list #{len}, #{one}, #{two} )", 3
-      Utils.selection list, one, two
+      {num, _} = Integer.parse numstr               
+      range = Utils.range( list, num, app )
+      Utils.debug "MemoryDb.articles_for_page num #{numstr} app #{app} len #{len}, Utils.selection( list #{len}, #{range} )", 3
+      Utils.selection list, range
     end
   end
 

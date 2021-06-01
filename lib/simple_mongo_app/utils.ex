@@ -174,8 +174,7 @@ defmodule SimpleMongoApp.Utils do
     end
   end
 
-  def range( list, which_page, app ) do               # (a b c d e, 2, 4) 5..5  (a b c d e, 2, 3) 4..5   (a b c d e, 1, 4) 1..4
-    {num, _} = Integer.parse which_page               # 2                         2                               1
+  def range( list, num, app ) do                      # (a b c d e, 2, 4) 5..5  (a b c d e, 2, 3) 4..5   (a b c d e, 1, 4) 1..4
     len = length list                                 # 5                         5                               5
     first = 1                                         # 1                         1                               1
     inc = app * (num - 1)                             # 4                         3                               0
@@ -186,23 +185,12 @@ defmodule SimpleMongoApp.Utils do
     first..last                                       # One-based indices
   end
 
-def selection( list, first, last ) do
-  list |> Enum.slice first-1..last-1
-end
-
-  # def selection( list, first, last ) do
-  #   debug "Utils.selection length list #{length list} first #{first} last #{last}", 3
-  #   one = first - 1                                   # Zero-based indices
-  #   two = last - 1
-  #   if one > length( list ) - 1 do
-  #     []
-  #   else
-  #     if one == two do
-  #       [Enum.at( list, one )]
-  #     else
-  #       [Enum.at( list, one )] ++ selection( list, one + 1, two )
-  #     end
-  #   end
-  # end
+  def selection( list, range1 ) do
+    list1 = range1 |> Enum.to_list()
+    first = List.first list1
+    last = List.last list1
+    range0 = first-1..last-1 # One-based indices - translate to zero-based
+    list |> Enum.slice range0
+  end
 
 end
