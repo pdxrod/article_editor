@@ -174,29 +174,35 @@ defmodule SimpleMongoApp.Utils do
     end
   end
 
-  def range( list, which_page, app ) do               # a b c d e   2   4   5..5  # a b c d e   2  3   4..5      a b c d e   1   4  1..4
+  def range( list, which_page, app ) do               # (a b c d e, 2, 4) 5..5  (a b c d e, 2, 3) 4..5   (a b c d e, 1, 4) 1..4
     {num, _} = Integer.parse which_page               # 2                         2                               1
     len = length list                                 # 5                         5                               5
     first = 1                                         # 1                         1                               1
-    inc = app * (num - 1)
+    inc = app * (num - 1)                             # 4                         3                               0
     first = first + inc                               # 5                         4                               1
     first = if first < 1, do: 1, else: first          # 5                         4                               1
     last = first + (app - 1)                          # 8                         6                               4
     last = if last > len, do: len, else: last         # 5                         5                               4
-    first..last
+    first..last                                       # One-based indices
   end
 
-  def selection( list, first, last ) do
-    debug "Utils.selection length ist #{length list} first #{first} last #{last}", 3
-    if first > length( list ) - 1 do
-      []
-    else
-      if first == last do
-        [Enum.at( list, first )]
-      else
-        [Enum.at( list, first )] ++ selection( list, first + 1, last )
-      end
-    end
-  end
+def selection( list, first, last ) do
+  list |> Enum.slice first-1..last-1
+end
+
+  # def selection( list, first, last ) do
+  #   debug "Utils.selection length list #{length list} first #{first} last #{last}", 3
+  #   one = first - 1                                   # Zero-based indices
+  #   two = last - 1
+  #   if one > length( list ) - 1 do
+  #     []
+  #   else
+  #     if one == two do
+  #       [Enum.at( list, one )]
+  #     else
+  #       [Enum.at( list, one )] ++ selection( list, one + 1, two )
+  #     end
+  #   end
+  # end
 
 end
