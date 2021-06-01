@@ -277,6 +277,29 @@ defmodule ArticleTest do
       assert ["b", "c", "d"] == selection
       selection = Utils.selection [], 2..4
       assert [] == selection
+
+      timings = Utils.timings()
+      num_per_page = elem( timings, 2 )
+      assert 3 == num_per_page # from test.exs
+      id1 = String.slice( RandomBytes.base16, 0..23 )
+      map = MemoryDb.id_and_short_id id1
+      sid = map["short_id"]
+      one = %{"classification" => "human", "name" => "jim", "url" => "http://jim.com", "_id" => id1, "short_id" => sid}
+      MemoryDb.put id1, one
+
+      write_articles_list = MemoryDb.articles()
+      write_articles_len = length write_articles_list
+      write_num_pages = MemoryDb.number_of_pages( "/write" )
+      Utils.debug "\ntest, num per page #{num_per_page} write articles len #{write_articles_len} write num pages #{write_num_pages}", 2
+      mod = if rem(write_articles_len, num_per_page) > 0, do: 1, else: 0    # integer division and modulus
+      assert write_num_pages == div(write_articles_len, num_per_page) + mod # The numbers change because of random saving of articles above, but this relationship holds
+
+      read_articles_list = Enum.filter( write_articles_list, fn(article) -> "sidebar" != elem(article, 1)[ "classification" ] end)
+      read_articles_len = length read_articles_list
+      read_num_pages = MemoryDb.number_of_pages( "/" )
+      Utils.debug "test, num per page #{num_per_page} read articles len #{read_articles_len} read num pages #{read_num_pages}", 2
+      mod = if rem(read_articles_len, num_per_page) > 0, do: 1, else: 0
+      assert read_num_pages == div(read_articles_len, num_per_page) + mod
     end
 
     test "time" do # See login_utils

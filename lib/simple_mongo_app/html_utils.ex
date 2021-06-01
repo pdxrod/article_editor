@@ -549,15 +549,15 @@ defmodule SimpleMongoApp.HtmlUtils do
   end
 
   def page_urls( url, num ) do
-    if num < 2 do
-      ""
-    else
-      "Pages " <> page_urls( url, num - 1 ) <> page_url( url, num )
-    end
+    "Pages " <> page_urls( url, num - 1 ) <> page_url( url, num )
   end
 
-  def show_pages(url) do
+  def show_pages( url ) do
     num_pages = MemoryDb.number_of_pages( url )
-    page_urls( url, num_pages )
+    if num_pages < 2 do
+      ""
+    else
+      page_urls( url, num_pages )
+    end
   end
 end

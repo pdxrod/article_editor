@@ -176,17 +176,13 @@ SAVE
   end
 
   def articles_for_page( list, numstr ) do
-    if true do
-      list
-    else
-      timings = Utils.timings()
-      app = elem( timings, 2 ) # articles per page
-      len = length list
-      {num, _} = Integer.parse numstr               
-      range = Utils.range( list, num, app )
-      Utils.debug "MemoryDb.articles_for_page num #{numstr} app #{app} len #{len}, Utils.selection( list #{len}, #{range} )", 3
-      Utils.selection list, range
-    end
+    timings = Utils.timings()
+    app = elem( timings, 2 ) # articles per page
+    len = length list
+    {num, _} = Integer.parse numstr
+    range = Utils.range( list, num, app )
+    Utils.debug "MemoryDb.articles_for_page num #{num} app #{app} len #{len}, Utils.selection( list #{len}, #{range} )", 2
+    Utils.selection list, range
   end
 
   def number_of_pages( url ) do
@@ -201,7 +197,7 @@ SAVE
     num = if 0 == num, do: 1, else: num
     mod = rem( len, app )
     num = if 0 == mod, do: num, else: num + 1
-    Utils.debug "MemoryDb.number_of_pages num #{num} app #{app} mod #{mod}", 2
+    Utils.debug "MemoryDb.number_of_pages url '#{url}' num #{num} app #{app} mod #{mod}", 2
     num
   end
 
