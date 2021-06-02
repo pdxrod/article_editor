@@ -244,8 +244,8 @@ defmodule SimpleMongoApp.HtmlUtils do
     str
   end
 
-  def select_articles( articles, s, c, write, p ) do
-    Utils.debug "HtmlUtils.select_articles write #{write}, p '#{p}', length articles #{ length articles}", 3
+  def select_articles( articles, s, c, write ) do
+    Utils.debug "HtmlUtils.select_articles write #{write}, length articles #{ length articles}", 2
     case articles do
       [] -> []
       [hd | tl] ->
@@ -260,9 +260,9 @@ defmodule SimpleMongoApp.HtmlUtils do
             single_quotes_class_regex = ~r/classification.+name.+value='#{ c }'/
             double_quotes_class_regex = ~r/classification.+name.+value="#{ c }"/
             if article =~ single_quotes_class_regex || article =~ double_quotes_class_regex do
-              [ { id, article } ] ++ select_articles( tl, s, c, write, p )
+              [ { id, article } ] ++ select_articles( tl, s, c, write)
             else
-              select_articles tl, s, c, write, p
+              select_articles tl, s, c, write
             end
           true ->               # Sometimes it's value='value', sometimes it's value="value" (double quotes)
             s = if nil == s, do: "", else: String.downcase s
@@ -271,9 +271,9 @@ defmodule SimpleMongoApp.HtmlUtils do
             eitherquotes = String.downcase( singlequotes ) <> String.downcase( doublequotes )
             Utils.debug "\nselect_articles s is #{s}, eitherquotes is #{eitherquotes}, eitherquotes contans s? #{String.contains?( eitherquotes, s ) }", 2
             if String.contains?( eitherquotes, s ) do
-              [ { id, article } ] ++ select_articles( tl, s, c, write, p )
+              [ { id, article } ] ++ select_articles( tl, s, c, write)
             else
-              select_articles tl, s, c, write, p
+              select_articles tl, s, c, write
             end
         end
     end
@@ -511,12 +511,7 @@ defmodule SimpleMongoApp.HtmlUtils do
   end
 
   def show_classifications( url ) do
-    list = MemoryDb.articles( )
-    list = if "/" == url do
-      Enum.filter( list, fn(article) -> "sidebar" != elem(article, 1)[ "classification" ] end)
-    else
-      list
-    end
+    list = if "/" == url, do: MemoryDb.read_articles( ), else: MemoryDb.write_articles()
     list = list |> classifications() |> MapSet.to_list()
     home = if "/" == url, do: "", else: "<a href='/'>HOME</a>&nbsp;&nbsp;&nbsp;" # read view doesn't need HOME 'cos HOME is the same as ALL, but in write view, they are different
     home <> "<b>Categories</b> " <> htmlify_classifications( list, url )
@@ -542,7 +537,6 @@ defmodule SimpleMongoApp.HtmlUtils do
   end
 
   def page_urls( url, num ) do
-    Utils.debug "page_urls #{url} #{num}", 3
     if num < 1 do
       ""
     else
@@ -552,7 +546,6 @@ defmodule SimpleMongoApp.HtmlUtils do
 
   def show_pages( url ) do
     num_pages = MemoryDb.number_of_pages( url )
-    Utils.debug "HtmlUtils.show_pages '#{url}' num pages #{num_pages}", 3
     if num_pages < 2 do
       ""
     else

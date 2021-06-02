@@ -165,7 +165,7 @@ SAVE
     the_articles
   end
 
-  def articles do
+  def articles( ) do
     list = all()
     Utils.debug "MemoryDb articles() ids #{Utils.debug_ids list}", 2
     valid_articles = Enum.filter( list, fn(article) -> HtmlUtils.valid_article_id( elem(article, 0) ) end )
@@ -175,16 +175,23 @@ SAVE
     sorted_articles
   end
 
-  def articles_for_page( numstr ) do
+  def write_articles() do
+    articles()
+  end
+
+  def read_articles() do
+    Enum.filter( articles(), fn(article) -> "sidebar" != elem(article, 1)[ "classification" ] end)
+  end
+
+  def articles_for_page( num_str, read_view ) do
     timings = Utils.timings()
     app = elem( timings, 2 ) # articles per page
-    list = articles()
-    len = length list
-    {num, _} = Integer.parse numstr
+    list = if read_view, do: read_articles(), else: write_articles()
+    {num, _} = Integer.parse num_str
     range = Utils.range( list, num, app )
     selection = Utils.selection list, range
     range_list = Enum.to_list range
-    Utils.debug "MemoryDb.articles_for_page list #{length list} selection #{length selection} numstr #{numstr} range #{List.first range_list}..#{List.last range_list}", 3
+    Utils.debug "MemoryDb.articles_for_page read_view #{read_view} list #{length list} selection #{length selection} num_str #{num_str} range #{List.first range_list}..#{List.last range_list}", 2
     selection
   end
 
@@ -192,14 +199,14 @@ SAVE
     timings = Utils.timings()
     app = elem( timings, 2 ) # articles per page
     list = articles()
-    list = if "/write" == url, do: list, else: Enum.filter( list, fn(article) -> "sidebar" != elem(article, 1)[ "classification" ] end)
+    list = if "/" == url, do: read_articles(), else: write_articles()
     len = length list
     app = if app > len, do: len, else: app
     app = if app < 1, do: 1, else: app
     mod = rem( len, app ) # integer division and modulus
     inc = if mod > 0, do: 1, else: 0
     num = div( len, app ) + inc
-    Utils.debug "MemoryDb.number_of_pages url '#{url}' len #{len} app #{app} mod #{mod} inc #{inc} num #{num}", 3
+    Utils.debug "MemoryDb.number_of_pages url '#{url}' len #{len} app #{app} mod #{mod} inc #{inc} num #{num}", 2
     num = if 0 == num, do: 1, else: num
     num
   end

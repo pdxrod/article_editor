@@ -286,16 +286,15 @@ defmodule ArticleTest do
       sid = map["short_id"]
       one = %{"classification" => "human", "name" => "jim", "url" => "http://jim.com", "_id" => id1, "short_id" => sid}
       MemoryDb.put id1, one
-      IO.puts ""
 
-      write_articles_list = MemoryDb.articles()
+      write_articles_list = MemoryDb.write_articles()
       write_articles_len = length write_articles_list
       write_num_pages = MemoryDb.number_of_pages( "/write" )
       Utils.debug "\ntest, num per page #{num_per_page} write articles len #{write_articles_len} write num pages #{write_num_pages}", 2
       mod = if rem(write_articles_len, num_per_page) > 0, do: 1, else: 0    # integer division and modulus
       assert write_num_pages == div(write_articles_len, num_per_page) + mod # The numbers change because of random saving of articles above, but this relationship holds
 
-      read_articles_list = Enum.filter( write_articles_list, fn(article) -> "sidebar" != elem(article, 1)[ "classification" ] end)
+      read_articles_list = MemoryDb.read_articles()
       read_articles_len = length read_articles_list
       read_num_pages = MemoryDb.number_of_pages( "/" )
       Utils.debug "test, num per page #{num_per_page} read articles len #{read_articles_len} read num pages #{read_num_pages}", 2
@@ -308,17 +307,25 @@ defmodule ArticleTest do
       two = %{"classification" => "sidebar", "name" => "jane", "page" => "<p>this is a sidebar for jim</p>", "url" => "http://localhost:4000/read/edit/#{sid}", "_id" => id2, "short_id" => she}
       MemoryDb.put id2, two
 
-      write_articles_list = MemoryDb.articles()
+      write_articles_list = MemoryDb.write_articles()
       write_articles_len = length write_articles_list
       write_num_pages = MemoryDb.number_of_pages( "/write" )
       mod = if rem(write_articles_len, num_per_page) > 0, do: 1, else: 0
       assert write_num_pages == div(write_articles_len, num_per_page) + mod
 
-      read_articles_list = Enum.filter( write_articles_list, fn(article) -> "sidebar" != elem(article, 1)[ "classification" ] end)
+      read_articles_list = MemoryDb.read_articles()
       read_articles_len = length read_articles_list
       read_num_pages = MemoryDb.number_of_pages( "/" )
       mod = if rem(read_articles_len, num_per_page) > 0, do: 1, else: 0
       assert read_num_pages == div(read_articles_len, num_per_page) + mod
+
+      list = MemoryDb.articles()
+      no_sidebars = Enum.filter( list, fn(article) -> "sidebar" != elem(article, 1)[ "classification" ] end)
+      assert length(list) == length(write_articles_list)
+      assert length(no_sidebars) == length(read_articles_list)
+      sidebars = Enum.filter( list, fn(article) -> "sidebar" == elem(article, 1)[ "classification" ] end)
+      assert 0 < length sidebars
+      assert length(write_articles_list) == length(read_articles_list) + length(sidebars)
     end
 
     test "time" do # See login_utils

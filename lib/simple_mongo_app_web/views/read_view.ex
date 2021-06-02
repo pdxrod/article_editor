@@ -13,9 +13,9 @@ defmodule SimpleMongoAppWeb.ReadView do
 
   def show_articles( s, c, p ) do
     try do
-      articles = MemoryDb.articles_for_page( p )
-      articles = Enum.filter( articles, fn(article) -> "sidebar" != elem(article, 1)[ "classification" ] end)
-      HtmlUtils.select_articles articles, s, c, false, p
+      articles = MemoryDb.articles_for_page( p, true )
+      articles = HtmlUtils.select_articles articles, s, c, false
+      articles
     rescue
       re in RuntimeError -> re
       [ { "decaf0ff", "Error: #{ re.message }" } ]

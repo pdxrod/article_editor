@@ -18,7 +18,7 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-config :simple_mongo_app, timings: {27, 17, 100}
+config :simple_mongo_app, timings: {27, 17, 170}
 
 config :simple_mongo_app, debugging: true
 
