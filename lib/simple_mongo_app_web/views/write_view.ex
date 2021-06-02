@@ -22,7 +22,7 @@ defmodule SimpleMongoAppWeb.WriteView do
 
   def show_articles( s, c, p ) do
     try do
-      articles = MemoryDb.articles_for_page( MemoryDb.articles( ), p )
+      articles = MemoryDb.articles_for_page( p )
       empty_row() ++ HtmlUtils.select_articles articles, s, c, true, p
     rescue
       re in RuntimeError -> re

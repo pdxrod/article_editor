@@ -175,15 +175,16 @@ SAVE
     sorted_articles
   end
 
-  def articles_for_page( list, numstr ) do
+  def articles_for_page( numstr ) do
     timings = Utils.timings()
     app = elem( timings, 2 ) # articles per page
+    list = articles()
     len = length list
     {num, _} = Integer.parse numstr
     range = Utils.range( list, num, app )
     selection = Utils.selection list, range
     range_list = Enum.to_list range
-    Utils.debug "MemoryDb.articles_for_page list #{length list} numstr #{numstr} range #{List.first range_list}..#{List.last range_list}", 3
+    Utils.debug "MemoryDb.articles_for_page list #{length list} selection #{length selection} numstr #{numstr} range #{List.first range_list}..#{List.last range_list}", 3
     selection
   end
 
@@ -195,7 +196,7 @@ SAVE
     len = length list
     app = if app > len, do: len, else: app
     app = if app < 1, do: 1, else: app
-    mod = rem( len, app )
+    mod = rem( len, app ) # integer division and modulus
     inc = if mod > 0, do: 1, else: 0
     num = div( len, app ) + inc
     Utils.debug "MemoryDb.number_of_pages url '#{url}' len #{len} app #{app} mod #{mod} inc #{inc} num #{num}", 3

@@ -538,7 +538,7 @@ defmodule SimpleMongoApp.HtmlUtils do
   end
 
   def page_url( url, num ) do
-    "&nbsp;<b><u><a href='#{ url }?p=#{ num }'>#{ num }</a></u></b>"
+    "<b><u><a href='#{ url }?p=#{ num }'>#{ num }</a></u></b>&nbsp;&nbsp;"
   end
 
   def page_urls( url, num ) do
@@ -556,7 +556,7 @@ defmodule SimpleMongoApp.HtmlUtils do
     if num_pages < 2 do
       ""
     else
-      "Pages " <> page_urls( url, num_pages )
+      "Pages &nbsp;" <> page_urls( url, num_pages )
     end
   end
 end
