@@ -194,12 +194,12 @@ SAVE
     list = if "/write" == url, do: list, else: Enum.filter( list, fn(article) -> "sidebar" != elem(article, 1)[ "classification" ] end)
     len = length list
     app = if app > len, do: len, else: app
-    num = div( len, app )
-    Utils.debug "MemoryDb.number_of_pages num #{num} app #{app} len #{len}", 2
-    num = if 0 == num, do: 1, else: num
+    app = if app < 1, do: 1, else: app
     mod = rem( len, app )
-    num = if 0 == mod, do: num, else: num + 1
-    Utils.debug "MemoryDb.number_of_pages url '#{url}' num #{num} app #{app} mod #{mod}", 2
+    inc = if mod > 0, do: 1, else: 0
+    num = div( len, app ) + inc
+    Utils.debug "MemoryDb.number_of_pages url '#{url}' len #{len} app #{app} mod #{mod} inc #{inc} num #{num}", 3
+    num = if 0 == num, do: 1, else: num
     num
   end
 

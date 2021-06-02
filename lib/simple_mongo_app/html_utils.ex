@@ -245,7 +245,7 @@ defmodule SimpleMongoApp.HtmlUtils do
   end
 
   def select_articles( articles, s, c, write, p ) do
-    Utils.debug "HtmlUtils.select_articles write #{write}, p '#{p}', length articles #{ length articles}", 2
+    Utils.debug "HtmlUtils.select_articles write #{write}, p '#{p}', length articles #{ length articles}", 3
     case articles do
       [] -> []
       [hd | tl] ->
@@ -542,7 +542,7 @@ defmodule SimpleMongoApp.HtmlUtils do
   end
 
   def page_urls( url, num ) do
-    Utils.debug "page_urls #{url} #{num}"
+    Utils.debug "page_urls #{url} #{num}", 3
     if num < 1 do
       ""
     else
@@ -552,6 +552,7 @@ defmodule SimpleMongoApp.HtmlUtils do
 
   def show_pages( url ) do
     num_pages = MemoryDb.number_of_pages( url )
+    Utils.debug "HtmlUtils.show_pages '#{url}' num pages #{num_pages}", 3
     if num_pages < 2 do
       ""
     else
