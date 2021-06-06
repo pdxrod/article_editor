@@ -184,15 +184,20 @@ SAVE
   end
 
   def articles_for_page( num_str, read_view ) do
-    timings = Utils.timings()
-    app = elem( timings, 2 ) # articles per page
     list = if read_view, do: read_articles(), else: write_articles()
-    {num, _} = Integer.parse num_str
-    range = Utils.range( list, num, app )
-    selection = Utils.selection list, range
-    range_list = Enum.to_list range
-    Utils.debug "MemoryDb.articles_for_page read_view #{read_view} list #{length list} selection #{length selection} num_str #{num_str} range #{List.first range_list}..#{List.last range_list}", 2
-    selection
+    list = if nil == num_str do
+      list
+    else
+      timings = Utils.timings()
+      app = elem( timings, 2 ) # articles per page
+      {num, _} = Integer.parse num_str
+      range = Utils.range( list, num, app )
+      selection = Utils.selection list, range
+      range_list = Enum.to_list range
+      Utils.debug "MemoryDb.articles_for_page read_view #{read_view} list #{length list} selection #{length selection} num_str #{num_str} range #{List.first range_list}..#{List.last range_list}", 2
+      selection
+    end
+    list
   end
 
   def number_of_pages( url ) do

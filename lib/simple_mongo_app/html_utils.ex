@@ -532,6 +532,11 @@ defmodule SimpleMongoApp.HtmlUtils do
     end
   end
 
+  def mt?( s_or_c ) do # s is the search string, c is classification, when user clicked on a Category link at the top of the index page
+    # See Javascript on index pages to see why s or c could be an underscore - it's so the find url can be /_/_/ etc. to avoid /// which doesn't get interpreted correctly
+    nil == s_or_c || "" == s_or_c || " " == s_or_c || "_" == s_or_c
+  end
+
   def page_url( url, num ) do
     "<b><u><a href='#{ url }?p=#{ num }'>#{ num }</a></u></b>&nbsp;&nbsp;"
   end

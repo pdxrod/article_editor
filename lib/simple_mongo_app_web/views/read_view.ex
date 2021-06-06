@@ -13,6 +13,7 @@ defmodule SimpleMongoAppWeb.ReadView do
 
   def show_articles( s, c, p ) do
     try do
+      p = if HtmlUtils.mt?( s ) && HtmlUtils.mt?( c ), do: p, else: nil
       articles = MemoryDb.articles_for_page( p, true )
       articles = HtmlUtils.select_articles articles, s, c, false
       articles
