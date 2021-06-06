@@ -242,10 +242,11 @@ defmodule ArticleTest do
 
       main = MemoryDb.peek id1
       sidebar = HtmlUtils.sidebar main
-      assert "<p>This is the second sidebar</p><br/>\n<p>This is the first sidebar</p><br/>\n" == sidebar
+      first_second = "<p>This is the first sidebar</p><br/>\n<p>This is the second sidebar</p><br/>\n"
+      assert first_second == sidebar
       main = MemoryDb.peek sid
       sidebar = HtmlUtils.sidebar main
-      assert "<p>This is the second sidebar</p><br/>\n<p>This is the first sidebar</p><br/>\n" == sidebar
+      assert first_second== sidebar
 
       other = MemoryDb.peek id2
       sidebar = HtmlUtils.sidebar other
