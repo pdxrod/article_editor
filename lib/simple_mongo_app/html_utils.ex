@@ -3,7 +3,7 @@ defmodule SimpleMongoApp.HtmlUtils do
   alias SimpleMongoApp.MemoryDb
   alias SimpleMongoApp.Utils
   alias SimpleMongoApp.DatetimeUtils
-  alias SimpleMongoApp.LginUtils
+  alias SimpleMongoApp.LoginUtils
   alias Phoenix.HTML.Safe
 
   @proto_regex     ~r/(https|http):\/\//i
