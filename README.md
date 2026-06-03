@@ -2,8 +2,6 @@
 
 Created on a Mac M1 with Elixir 1.11.4 (compiled with Erlang/OTP 23), Phoenix 1.3.0, and MongoDB 4.4.4
 
-A working example of this Phoenix project can be found at [pdxspurs.com](http://pdxspurs.com).
-
 Before starting Phoenix you need to get Elixir, Mongo and Node (`brew install node` on a Mac - you need Homebrew if you don't already have it - https://brew.sh/)
 
   * Install Node.js dependencies with `cd assets` then
